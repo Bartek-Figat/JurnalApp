@@ -1,9 +1,11 @@
 import { useRoutes } from "react-router-dom";
 import Main from "./pages/main/main";
 import NotFoundPage from "./pages/notFound/notFound";
-import SingIn from "./pages/singIn/singIn";
+import SingIn from "./pages/singUp/singUp";
 import Login from "./pages/login/login";
-import Layout from "./pages/dasboard/layout";
+import Layout from "./pages/dashboard/layout/layout";
+import DashboardPage from "./pages/dashboard/dashboardIndex/DashboardPage";
+import CreateTrade from "./pages/createTrade/CreateTrade";
 
 const App = () => {
   const element = useRoutes([
@@ -20,8 +22,12 @@ const App = () => {
       element: <Login />,
     },
     {
-      path: "/dashboard",
+      path: "dashboard",
       element: <Layout />,
+      children: [
+        { index: true, element: <DashboardPage /> },
+        { path: "create-trade", element: <CreateTrade /> },
+      ],
     },
     {
       path: "*",

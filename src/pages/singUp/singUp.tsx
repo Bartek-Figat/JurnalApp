@@ -22,7 +22,7 @@ interface SignUpFormValues {
   agreementToWebsitePolicy: boolean;
 }
 
-const SingIn = () => {
+const SingUP = () => {
   const initialValues: SignUpFormValues = {
     email: "",
     firstName: "",
@@ -209,4 +209,4 @@ const SingIn = () => {
   );
 };
 
-export default SingIn;
+export default SingUP;

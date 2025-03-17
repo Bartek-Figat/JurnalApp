@@ -9,7 +9,7 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 bg-white shadow-md md:hidden dark:bg-[#151822]">
+    <nav className="fixed inset-x-0 top-0 z-50 bg-white shadow-md dark:bg-[#151822] md:hidden">
       <div className="flex items-center justify-between p-4">
         <div className="text-lg font-bold">My App</div>
         <button onClick={toggleMenu} className="lg:hidden">
@@ -18,8 +18,10 @@ export const Navbar = () => {
       </div>
       {isOpen && (
         <div
-          className={`flex h-screen flex-col bg-white p-4 transition-all duration-300 ease-in-out lg:hidden dark:bg-[#151822] ${
-            isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+          className={`flex h-screen flex-col bg-white p-4 transition-all duration-300 ease-in-out dark:bg-[#151822] lg:hidden ${
+            isOpen
+              ? "max-h-screen bg-opacity-100 opacity-100"
+              : "max-h-0 bg-opacity-0 opacity-0"
           } overflow-hidden lg:hidden`}
         >
           <a href="#home" className="py-2">

@@ -3,7 +3,7 @@ import Main from "./pages/main/main";
 import NotFoundPage from "./pages/notFound/notFound";
 import SingIn from "./pages/singUp/singUp";
 import Login from "./pages/login/login";
-import Layout from "./pages/dashboard/layout/layout";
+import Layout from "./pages/layout/layout";
 import DashboardPage from "./pages/dashboard/dashboardIndex/DashboardPage";
 import CreateTrade from "./pages/createTrade/CreateTrade";
 

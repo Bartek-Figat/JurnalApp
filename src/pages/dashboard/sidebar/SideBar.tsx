@@ -33,7 +33,7 @@ export const Sidebar = () => {
         className={`lg:min-w-65 flex h-full flex-col justify-between border-r border-gray-200 p-6 text-sm font-semibold transition-colors duration-300 max-lg:px-4 ${isDarkMode ? "dark:border-[#212737] dark:bg-[#151822]" : "border-gray-200 bg-white"}`}
       >
         <div className="flex flex-col gap-6">
-          <SiteLogo className="hidden h-10 w-full text-black lg:block dark:text-[#6B7591]" />
+          <SiteLogo className="hidden h-10 w-full text-black dark:text-[#6B7591] lg:block" />
           <SiteLogoWithoutText className="hidden size-max max-lg:block" />
           <hr
             className={`border-gray-200 ${isDarkMode ? "dark:border-[#212737]" : "border-gray-200"}`}
@@ -94,7 +94,7 @@ export const Sidebar = () => {
             title="Logout"
           >
             <LogOut className="mr-2" />
-            <span className="hidden font-medium text-gray-700 lg:inline dark:text-[#6B7591]">
+            <span className="hidden font-medium text-gray-700 dark:text-[#6B7591] lg:inline">
               Logout
             </span>
           </button>
@@ -107,7 +107,7 @@ export const Sidebar = () => {
             title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
             {isDarkMode ? <Sun className="mr-2" /> : <Moon className="mr-2" />}
-            <span className="hidden font-medium text-gray-700 lg:inline dark:text-[#6B7591]">
+            <span className="hidden font-medium text-gray-700 dark:text-[#6B7591] lg:inline">
               {isDarkMode ? "Light Mode" : "Dark Mode"}
             </span>
           </button>

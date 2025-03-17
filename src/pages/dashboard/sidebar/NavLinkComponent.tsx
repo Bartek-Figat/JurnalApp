@@ -19,9 +19,9 @@ const NavLinkComponent: React.FC<NavLinkComponentProps> = ({
       className={({ isActive }) =>
         `flex items-center rounded-lg p-3 transition-colors duration-300 ${
           isActive
-            ? "bg-blue-600 text-white shadow-md dark:bg-[#0052cc] dark:hover:text-white"
-            : "hover:bg-blue-100 hover:text-[#424757] dark:hover:bg-[#0052cc] dark:hover:text-white"
-        } dark:border-[#212737] dark:text-[#6B7591]`
+            ? "bg-blue-600 text-white shadow-md dark:bg-[#0052cc] dark:text-white"
+            : "hover:bg-blue-600 hover:text-white dark:text-white dark:hover:bg-[#0052cc]"
+        } `
       }
     >
       <Icon className="h-5 w-5 lg:mr-3" />

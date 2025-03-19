@@ -28,7 +28,7 @@ const TradeModal: React.FC<{
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className={`fixed inset-0 z-10 flex max-h-[100vh] w-full items-center justify-center ${
+        className={`fixed inset-0 z-50 flex max-h-[100vh] w-full items-center justify-center ${
           darkMode ? "bg-black bg-opacity-80" : "bg-black bg-opacity-60"
         } backdrop-blur-sm`}
         role="dialog"

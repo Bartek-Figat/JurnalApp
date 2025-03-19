@@ -6,6 +6,7 @@ import Login from "./pages/login/login";
 import Layout from "./pages/layout/layout";
 import DashboardPage from "./pages/dashboard/dashboardIndex/DashboardPage";
 import CreateTrade from "./pages/createTrade/CreateTrade";
+import Calendar from "./pages/calendar/Calendar";
 
 const App = () => {
   const element = useRoutes([
@@ -27,6 +28,7 @@ const App = () => {
       children: [
         { index: true, element: <DashboardPage /> },
         { path: "create-trade", element: <CreateTrade /> },
+        { path: "calendar", element: <Calendar /> },
       ],
     },
     {

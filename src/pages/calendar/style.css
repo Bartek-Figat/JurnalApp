@@ -1,0 +1,73 @@
+.calendar-container {
+  margin: auto;
+  padding: 24px;
+  background-color: var(--theme-color-background-foreground);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.fc .fc-col-header-cell {
+  padding: 10px;
+}
+
+.fc-daygrid-day-top {
+  padding-top: 16px;
+  padding-right: 16px;
+  color: var(--theme-color-text); /* Light mode text color */
+}
+[data-theme="dark"] .fc-daygrid-day-top {
+  color: var(--theme-color-text-dark); /* Dark mode text color */
+}
+
+.fc-scrollgrid-section > td {
+  border-radius: 0px 0px 16px 16px !important;
+  overflow: hidden;
+  color: var(--theme-color-text); /* Light mode text color */
+}
+[data-theme="dark"] .fc-scrollgrid-section > td {
+  color: red; /* Dark mode text color */
+}
+
+.fc-scrollgrid-section > th {
+  border-radius: 0px 16px 0px 0px !important;
+  overflow: hidden;
+  color: var(--theme-color-text); /* Light mode text color */
+}
+[data-theme="dark"] .fc-scrollgrid-section > th {
+  color: var(--theme-color-text-dark); /* Dark mode text color */
+}
+
+.fc-scrollgrid {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.fc-toolbar-title {
+  color: black;
+}
+[data-theme="dark"] .fc-toolbar-title {
+  color: white;
+}
+* {
+  --fc-border-color: var(--theme-color-border);
+  --fc-page-bg-color: transparent;
+}
+
+.fc-button-group {
+  background: transparent !important;
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.fc .fc-button {
+  background: var(--theme-color-primary) !important;
+  border-color: transparent !important;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px !important;
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

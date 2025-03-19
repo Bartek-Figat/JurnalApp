@@ -7,6 +7,16 @@ module.exports = {
       animation: {
         blob: "blob 7s infinite",
       },
+      colors: {
+        "theme-color-primary": "#0052cc",
+        "theme-color-primary-foreground": "#b0c9ef",
+        "theme-color-text": "#6b7591",
+        "theme-color-background": "#f5f5f5",
+        "theme-color-background-foreground": "white",
+        "theme-color-destructive": "#fe4543",
+        "theme-color-success": "#38c975",
+        "theme-color-border": "#e5e7eb",
+      },
       keyframes: {
         blob: {
           "0%": {

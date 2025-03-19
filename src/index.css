@@ -35,3 +35,56 @@ html {
   background-color: rgba(0, 255, 204, 0.2); /* Light teal background */
   color: #00ffcc; /* Text color for dark mode highlight */
 }
+
+/* Add this to your global CSS file */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #a0aec0; /* Change to your desired color */
+  border-radius: 10px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #edf2f7; /* Change to your desired color */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme inline {
+  --color-primary: var(--theme-color-primary);
+  --color-primary-foreground: var(--theme-color-primary-foreground);
+  --color-text: var(--theme-color-text);
+  --color-background: var(--theme-color-background);
+  --color-background-foreground: var(--theme-color-background-foreground);
+  --color-destructive: var(--theme-color-destructive);
+  --color-success: var(--theme-color-success);
+  --color-border: var(--theme-color-border);
+}
+
+@layer base {
+  :root {
+    --theme-color-primary: #0052cc;
+    --theme-color-primary-foreground: #b0c9ef;
+    --theme-color-text: #6b7591;
+    --theme-color-background: #f5f5f5;
+    --theme-color-background-foreground: white;
+    --theme-color-destructive: #fe4543;
+    --theme-color-success: #38c975;
+    --theme-color-border: #e5e7eb;
+  }
+
+  [data-theme="dark"] {
+    --theme-color-primary-foreground: #002256;
+    --theme-color-text: #6b7591;
+    --theme-color-background: #0c0f17;
+    --theme-color-background-foreground: #151822;
+    --theme-color-border: #212737;
+  }
+}

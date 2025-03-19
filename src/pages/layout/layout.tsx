@@ -17,7 +17,7 @@ export default function Layout() {
             <Navbar />
           </div>
         </motion.header>
-        <div className="flex h-screen w-full flex-col">
+        <div className="flex w-full flex-col">
           <main className="md:ml-20 lg:ml-[266px]">
             <Outlet />
           </main>

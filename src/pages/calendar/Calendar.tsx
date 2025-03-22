@@ -1,5 +1,6 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import "./style.css";
 import { tw } from "../../helpers/tw";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -41,6 +42,7 @@ export default function Calendar() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleResize = () => {
     const width = window.innerWidth;
     if (width < 640) {
@@ -59,7 +61,7 @@ export default function Calendar() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [handleResize]);
 
   const groupedByStartDateEvents = useMemo(
     () => groupEventsByStartDate({ events: normalizedData }),
@@ -77,7 +79,6 @@ export default function Calendar() {
 
         return {
           start: startDate,
-          // end: isGrouped ? startDate : endDate.toISOString().split("T")[0],
           end: startDate,
           backgroundColor: isGrouped ? "#0052CC" : event.colorHex,
           borderColor: "transparent",
@@ -89,8 +90,8 @@ export default function Calendar() {
 
   return (
     <>
-      <div className="flex flex-col gap-12 p-12 dark:bg-[#0c0f17] sm:mt-2 md:mt-0 lg:mt-0">
-        <div className="flex flex-col gap-4 rounded-md bg-gray-100/50 p-6 dark:bg-[#151822]">
+      <div className="mt-10 flex flex-col gap-12 p-12 dark:bg-[#0c0f17]">
+        <div className="relative flex flex-col gap-4 rounded-lg bg-gray-50 p-6 shadow-2xl dark:bg-[#151822]">
           <TabSwitcher
             tabs={[
               { value: CalendarType.MONTH, text: "Months" },
@@ -101,11 +102,14 @@ export default function Calendar() {
             layoutId="calendar-bubble"
             tabOnClick={handleViewChange}
             wrapperClassName="absolute w-max"
-            tabProps={{ className: "px-6" }}
+            tabProps={{
+              className:
+                "px-6 py-2 rounded-md text-lg font-semibold transition-colors duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-[#212737]",
+            }}
           />
 
           <FullCalendar
-            plugins={[dayGridPlugin]}
+            plugins={[dayGridPlugin, timeGridPlugin]}
             initialView={currentContainerId}
             headerToolbar={{
               left: "",
@@ -122,11 +126,11 @@ export default function Calendar() {
                 isToday && "border-2 border-blue-500",
                 isOther &&
                   "dark:text-blue-300 text-blue-500 hover:text-blue-700",
-                "dark:border-gray-600 border-gray-300",
+                "dark:border-[#212737] border-gray-100",
               );
             }}
             dayHeaderClassNames={() => {
-              return "dark:bg-[#0c0f17] py-4! dark:border-gray-600 border-gray-300";
+              return "dark:bg-[#0c0f17] py-4! dark:border-[#212737] border-gray-100";
             }}
             firstDay={1}
             dayHeaderFormat={{ weekday: "long" }}
@@ -142,7 +146,9 @@ export default function Calendar() {
               return (
                 <div className="mt-auto flex justify-between p-3">
                   {isGrouped ? (
-                    <div>+{arg.event.extendedProps.events.length}</div>
+                    <div className="w-fit text-xs font-bold text-white">
+                      +{arg.event.extendedProps.events.length}
+                    </div>
                   ) : (
                     <>
                       <div className="text-xs font-bold text-white">
@@ -161,7 +167,7 @@ export default function Calendar() {
 
               return tw(
                 "cursor-pointer",
-                isGrouped && "w-fit size-[45px] flex items-center",
+                isGrouped && "w-full h-full flex items-center justify-center",
               );
             }}
             eventClick={(arg) => {

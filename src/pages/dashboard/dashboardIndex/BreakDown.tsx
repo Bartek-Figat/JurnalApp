@@ -72,15 +72,15 @@ const portfolios = [
   },
 ];
 
-const BraekDownPerfomance = () => {
+const BreakdownPerformance = () => {
   return (
     <div className="flex flex-col gap-6 p-8 text-white dark:bg-[#0C0F17]">
-      <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-1 lg:grid-cols-[2fr_1fr]">
-        <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+      <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-1 lg:grid-cols-[2fr_1fr]">
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
           {portfolios.map((portfolio, index) => (
             <div
               key={index}
-              className="flex flex-col rounded-lg border-gray-700 p-4 shadow-md dark:bg-[#151822]"
+              className="flex flex-col rounded-lg border border-gray-700 p-6 shadow-md dark:bg-[#151822]"
             >
               <h3 className="flex flex-row justify-between text-xl font-bold text-gray-900 dark:text-gray-200">
                 {portfolio.title}
@@ -102,14 +102,14 @@ const BraekDownPerfomance = () => {
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-1 gap-4 shadow-md md:grid-cols-2 lg:grid-cols-1">
+        <div className="grid grid-cols-1 gap-6 shadow-lg md:grid-cols-2 lg:grid-cols-1">
           {data.map((item, index) => (
             <div
               key={index}
-              className="flex items-center gap-4 rounded-md p-2 dark:bg-[#151822]"
+              className="flex transform items-center gap-6 rounded-lg p-6 dark:bg-gray-800"
             >
               <div
-                className="flex h-12 w-12 items-center justify-center rounded-full"
+                className="flex h-14 w-14 items-center justify-center rounded-full"
                 style={{
                   color: "rgb(100, 181, 246)",
                   backgroundColor: item.bgColor,
@@ -118,8 +118,10 @@ const BraekDownPerfomance = () => {
                 <item.icon className="text-gray-200" />
               </div>
               <div className="flex flex-col">
-                <p className="text-lg text-green-600">{item.change}</p>
-                <p className="text-sm text-gray-700 dark:text-gray-400">
+                <p className="text-xl font-semibold text-green-500">
+                  {item.change}
+                </p>
+                <p className="text-base text-gray-700 dark:text-gray-300">
                   {item.label}
                 </p>
               </div>
@@ -131,4 +133,4 @@ const BraekDownPerfomance = () => {
   );
 };
 
-export default BraekDownPerfomance;
+export default BreakdownPerformance;

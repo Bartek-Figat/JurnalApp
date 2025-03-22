@@ -1,10 +1,6 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import {
-  createChart,
-  IChartApi,
-  ISeriesApi,
-  LineSeries,
-} from "lightweight-charts";
+import { createChart, LineSeries } from "lightweight-charts";
+import type { IChartApi, ISeriesApi } from "lightweight-charts";
 import { useDarkMode } from "../../../../../contexts/DarkModeContext";
 
 type AreaChartProps = {
@@ -18,6 +14,7 @@ const AreaChart1: React.FC<AreaChartProps> = ({ data1, data2 }) => {
   const lineSeries1Ref = useRef<ISeriesApi<"Line"> | null>(null);
   const lineSeries2Ref = useRef<ISeriesApi<"Line"> | null>(null);
   const { isDarkMode } = useDarkMode();
+
   const initializeChart = useCallback(() => {
     if (!chartContainerRef.current) return;
 
@@ -29,7 +26,6 @@ const AreaChart1: React.FC<AreaChartProps> = ({ data1, data2 }) => {
         textColor: isDarkMode ? "#ffffff" : "#3b3131",
         attributionLogo: false,
       },
-
       grid: {
         vertLines: { visible: false },
         horzLines: { visible: false },
@@ -82,7 +78,9 @@ const AreaChart1: React.FC<AreaChartProps> = ({ data1, data2 }) => {
     const toolTip = document.createElement("div");
     toolTip.className =
       "z-10 w-[200px] h-[120px] absolute hidden box-border text-center z-1000 pointer-events-none rounded-lg shadow-xl transition-opacity duration-300 opacity-0 " +
-      (isDarkMode ? "bg-gray-900" : "bg-white") +
+      (isDarkMode
+        ? "bg-gray-900 bg-opacity-50 backdrop-blur-md"
+        : "bg-white bg-opacity-70 backdrop-blur-lg") +
       " " +
       (isDarkMode ? "text-gray-200" : "text-gray-800") +
       " border border-gray-300";
@@ -114,32 +112,32 @@ const AreaChart1: React.FC<AreaChartProps> = ({ data1, data2 }) => {
           price2 = data2.value;
         }
         toolTip.innerHTML = `
-        <div class="flex flex-col justify-center ">
-        <div class="bg-green-600/40 text-white p-2  shadow-lg mb-3"> ${dateStr}</div>
-        <div class="text-${isDarkMode ? "gray-300" : "text-black"}  text-md p-1">Price: ${Math.round(100 * price1) / 100}</div>
-        <div class="text-${isDarkMode ? "gray-300" : "text-black"}  text-md p-1">Price: ${Math.round(100 * price2) / 100}</div> 
-        </div>
-    `;
+          <div class="flex flex-col justify-center p-2">
+            <div class="bg-green-600 text-white py-1 px-2 rounded mb-2 shadow-lg">${dateStr}</div>
+            <div class="text-${isDarkMode ? "gray-300" : "gray-800"} text-md p-1">Price 1: ${Math.round(100 * price1) / 100}</div>
+            <div class="text-${isDarkMode ? "gray-300" : "gray-800"} text-md p-1">Price 2: ${Math.round(100 * price2) / 100}</div>
+          </div>
+        `;
         const coordinate1 = lineSeries1.priceToCoordinate(price1);
         const coordinate2 = lineSeries2.priceToCoordinate(price2);
-        let shiftedCoordinate = param.point.x - 60;
+        let shiftedCoordinate = param.point.x - 100;
         if (coordinate1 === null || coordinate2 === null) {
           return;
         }
         shiftedCoordinate = Math.max(
           0,
           Math.min(
-            chartContainerRef.current!.clientWidth - 120,
+            chartContainerRef.current!.clientWidth - 200,
             shiftedCoordinate,
           ),
         );
         const coordinateY =
-          Math.min(coordinate1, coordinate2) - 80 - 15 > 0
-            ? Math.min(coordinate1, coordinate2) - 80 - 15
+          Math.min(coordinate1, coordinate2) - 130 > 0
+            ? Math.min(coordinate1, coordinate2) - 130
             : Math.max(
                 0,
                 Math.min(
-                  chartContainerRef.current!.clientHeight - 80 - 15,
+                  chartContainerRef.current!.clientHeight - 120,
                   Math.max(coordinate1, coordinate2) + 15,
                 ),
               );
@@ -147,6 +145,7 @@ const AreaChart1: React.FC<AreaChartProps> = ({ data1, data2 }) => {
         toolTip.style.top = coordinateY + "px";
       }
     });
+
     chart.timeScale().fitContent();
     chartRef.current = chart;
   }, [data1, data2, isDarkMode]);

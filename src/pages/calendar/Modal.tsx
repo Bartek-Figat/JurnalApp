@@ -18,7 +18,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, payload }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm">
-      <div className="no-scrollbar relative max-h-[calc(100%-100px)] w-full max-w-md transform rounded-2xl bg-white p-6 shadow-lg transition-transform dark:bg-[#151822]">
+      <div className="relative max-h-[calc(100%-100px)] w-full max-w-md transform rounded-lg bg-white p-2 shadow-2xl transition-transform dark:bg-[#151822]">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 rounded-md bg-gray-200 p-2 text-gray-600 transition duration-200 hover:text-gray-800 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-gray-200"
@@ -50,7 +50,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, payload }) => {
               return (
                 <div
                   key={index}
-                  className="flex flex-col rounded-md bg-gray-100/70 p-6 dark:bg-[#0c0f17]"
+                  className="flex flex-col justify-center rounded-lg bg-gray-100 p-4 dark:bg-[#0c0f17]"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -64,7 +64,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, payload }) => {
                       </div>
                     </div>
                     <button
-                      onClick={() => toggleOpen(index)} // Toggle open/close for the specific card
+                      onClick={() => toggleOpen(index)}
                       className={`transition-transform duration-300 dark:text-white ${openStates[index] ? "rotate-180" : ""}`}
                       aria-label={
                         openStates[index] ? "Close details" : "Open details"

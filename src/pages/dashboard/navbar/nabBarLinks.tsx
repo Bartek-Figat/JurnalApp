@@ -5,27 +5,30 @@ interface NavLinkComponentProps {
   to: string;
   label: string;
   Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  onClick?: () => void;
 }
 
 const NavLinkComponent: React.FC<NavLinkComponentProps> = ({
   to,
   label,
   Icon,
+  onClick,
 }) => {
   return (
     <NavLink
       to={to}
       end
       className={({ isActive }) =>
-        `flex items-center rounded-lg p-3 transition-all duration-300 ease-in-out ${
+        `mt-2 flex items-center rounded-lg p-3 transition-all duration-300 ease-in-out ${
           isActive
-            ? "bg-blue-600 text-white shadow-md dark:bg-[#0052cc] dark:text-white"
-            : "hover:bg-blue-600 hover:text-white dark:text-white dark:hover:bg-[#0052cc]"
+            ? "transform bg-blue-600 text-white shadow-lg dark:bg-[#0052cc] dark:text-white"
+            : "hover:bg-blue-600 hover:text-white dark:text-gray-300 dark:hover:bg-[#0052cc] dark:hover:text-white"
         }`
       }
+      onClick={onClick}
     >
-      <Icon className="h-5 w-5 lg:mr-3" />
-      <span className="hidden font-medium lg:inline">{label}</span>
+      <Icon className="mr-3 h-5 w-5" />
+      <span className="inline font-medium">{label}</span>
     </NavLink>
   );
 };

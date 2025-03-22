@@ -12,28 +12,25 @@
 .fc-daygrid-day-top {
   padding-top: 16px;
   padding-right: 16px;
-  color: var(--theme-color-text); /* Light mode text color */
+  color: var(--theme-color-text);
 }
 [data-theme="dark"] .fc-daygrid-day-top {
-  color: var(--theme-color-text-dark); /* Dark mode text color */
+  color: var(--theme-color-text-dark);
 }
 
 .fc-scrollgrid-section > td {
   border-radius: 0px 0px 16px 16px !important;
   overflow: hidden;
-  color: var(--theme-color-text); /* Light mode text color */
-}
-[data-theme="dark"] .fc-scrollgrid-section > td {
-  color: red; /* Dark mode text color */
+  color: var(--theme-color-text);
 }
 
 .fc-scrollgrid-section > th {
   border-radius: 0px 16px 0px 0px !important;
   overflow: hidden;
-  color: var(--theme-color-text); /* Light mode text color */
+  color: var(--theme-color-text);
 }
 [data-theme="dark"] .fc-scrollgrid-section > th {
-  color: var(--theme-color-text-dark); /* Dark mode text color */
+  color: var(--theme-color-text-dark);
 }
 
 .fc-scrollgrid {

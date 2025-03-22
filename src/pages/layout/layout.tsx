@@ -7,7 +7,7 @@ import { Navbar } from "../dashboard/navbar/navbar";
 export default function Layout() {
   return (
     <DarkModeProvider>
-      <div className="flex h-screen">
+      <div className="flex h-screen dark:bg-[#0C0F17]">
         <motion.header
           layoutScroll
           className="contents sm:flex md:fixed md:flex lg:fixed lg:z-40 lg:flex"

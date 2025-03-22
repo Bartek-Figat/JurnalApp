@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Home,
   BarChart,
@@ -25,18 +26,25 @@ export const Sidebar = () => {
   };
 
   return (
-    // ... existing code ...
     <div
-      className={`lg:min-w-65 min-w-19 min-w-0 transition-all max-md:hidden sm:min-w-10 ${isDarkMode ? "bg-[#151822]" : "bg-white"} h-screen`} // Added h-screen
+      className={`lg:min-w-65 min-w-19 min-w-0 transition-all max-md:hidden sm:min-w-10 ${
+        isDarkMode ? "bg-[#151822]" : "bg-white"
+      } h-screen`}
     >
       <div
-        className={`lg:min-w-65 flex h-full flex-col justify-between border-r border-gray-200 p-6 text-sm font-semibold transition-colors duration-300 max-lg:px-4 ${isDarkMode ? "dark:border-[#212737] dark:bg-[#151822]" : "border-gray-200 bg-white"}`}
+        className={`lg:min-w-65 flex h-full flex-col justify-between border-r p-6 text-sm font-semibold transition-colors duration-300 max-lg:px-4 ${
+          isDarkMode
+            ? "dark:border-[#212737] dark:bg-[#151822]"
+            : "border-gray-200 bg-white"
+        }`}
       >
         <div className="flex flex-col gap-6">
           <SiteLogo className="hidden h-10 w-full text-black dark:text-[#6B7591] lg:block" />
           <SiteLogoWithoutText className="hidden size-max max-lg:block" />
           <hr
-            className={`border-gray-200 ${isDarkMode ? "dark:border-[#212737]" : "border-gray-200"}`}
+            className={`border-gray-200 ${
+              isDarkMode ? "dark:border-[#212737]" : "border-gray-200"
+            }`}
           />
           <div className="flex flex-col gap-2">
             <NavLinkComponent
@@ -69,7 +77,9 @@ export const Sidebar = () => {
           </div>
         </div>
         <hr
-          className={`border-gray-200 ${isDarkMode ? "dark:border-[#212737]" : "border-gray-200"}`}
+          className={`border-gray-200 ${
+            isDarkMode ? "dark:border-[#212737]" : "border-gray-200"
+          }`}
         />
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
@@ -80,17 +90,17 @@ export const Sidebar = () => {
             />
             <NavLinkComponent to="/my-account" label="My Account" Icon={User} />
           </div>
-
           <hr
-            className={`border-gray-200 ${isDarkMode ? "dark:border-[#212737]" : "border-gray-200"}`}
+            className={`border-gray-200 ${
+              isDarkMode ? "dark:border-[#212737]" : "border-gray-200"
+            }`}
           />
-
           <div className="flex flex-col gap-2">
             <NavLinkComponent to="/settings" label="Settings" Icon={Settings} />
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center rounded p-2 text-gray-700 hover:bg-blue-300 dark:text-[#6B7591] dark:hover:bg-[#212737]"
+            className="flex items-center rounded p-2 text-gray-700 transition-colors hover:bg-blue-300 dark:text-[#6B7591] dark:hover:bg-[#212737]"
             title="Logout"
           >
             <LogOut className="mr-2" />
@@ -99,11 +109,13 @@ export const Sidebar = () => {
             </span>
           </button>
           <hr
-            className={`border-gray-200 ${isDarkMode ? "dark:border-[#212737]" : "border-gray-200"}`}
+            className={`border-gray-200 ${
+              isDarkMode ? "dark:border-[#212737]" : "border-gray-200"
+            }`}
           />
           <button
             onClick={toggleDarkMode}
-            className="flex items-center rounded p-2 text-gray-700 hover:bg-blue-300 dark:text-[#6B7591] dark:hover:bg-[#212737]"
+            className="flex items-center rounded p-2 text-gray-700 transition-colors hover:bg-blue-300 dark:text-[#6B7591] dark:hover:bg-[#212737]"
             title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
             {isDarkMode ? <Sun className="mr-2" /> : <Moon className="mr-2" />}
@@ -114,6 +126,5 @@ export const Sidebar = () => {
         </div>
       </div>
     </div>
-    // ... existing code ...
   );
 };

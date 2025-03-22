@@ -1,4 +1,3 @@
-import { bestTrades } from "../data/priceData";
 import { BestTradesDisplay } from "./BestTradesDisplay";
 import BraekDownPerfomance from "./BreakDown";
 import ChartIndexPage from "./charts/chartIndexPage";
@@ -10,7 +9,7 @@ const DashboardIndex = () => {
       <PriceTicker />
       <BraekDownPerfomance />
       <ChartIndexPage />
-      <BestTradesDisplay bestTrades={bestTrades} />
+      <BestTradesDisplay />
     </>
   );
 };

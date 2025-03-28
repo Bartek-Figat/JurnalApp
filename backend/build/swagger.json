@@ -1,0 +1,1136 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"UserProfile": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateProfileRequest": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreateTrade": {
+				"properties": {
+					"tradeOutcome": {
+						"type": "string"
+					},
+					"riskPercentage": {
+						"type": "number",
+						"format": "double"
+					},
+					"positionType": {
+						"type": "string",
+						"enum": [
+							"long",
+							"short",
+							"spot"
+						]
+					},
+					"leverage": {
+						"type": "number",
+						"format": "double"
+					},
+					"costBasis": {
+						"type": "number",
+						"format": "double"
+					},
+					"profitLoss": {
+						"type": "number",
+						"format": "double"
+					},
+					"symbol": {
+						"type": "string"
+					},
+					"entryPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"exitPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"risk": {
+						"type": "number",
+						"format": "double"
+					},
+					"reward": {
+						"type": "number",
+						"format": "double"
+					},
+					"tags": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"stopLossLevel": {
+						"type": "number",
+						"format": "double"
+					},
+					"positionSize": {
+						"type": "number",
+						"format": "double"
+					},
+					"tradeType": {
+						"type": "string",
+						"enum": [
+							"stock",
+							"forex",
+							"crypto",
+							"option",
+							"crypto spot"
+						]
+					},
+					"entryDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"exitDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"quantity": {
+						"type": "number",
+						"format": "double"
+					},
+					"optionType": {
+						"type": "string",
+						"enum": [
+							"call",
+							"put"
+						]
+					},
+					"strikePrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"optionPremium": {
+						"type": "number",
+						"format": "double"
+					},
+					"units": {
+						"type": "number",
+						"format": "double"
+					},
+					"usdExchangeRate": {
+						"type": "number",
+						"format": "double"
+					},
+					"fees": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"tradeOutcome",
+					"symbol",
+					"entryPrice",
+					"exitPrice",
+					"risk",
+					"reward",
+					"tags",
+					"createdAt",
+					"tradeType",
+					"entryDate",
+					"exitDate"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ITrade": {
+				"properties": {
+					"tradeType": {
+						"type": "string"
+					},
+					"entryDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"exitDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"userId": {
+						"type": "string"
+					},
+					"symbol": {
+						"type": "string"
+					},
+					"entryPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"exitPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"risk": {
+						"type": "number",
+						"format": "double"
+					},
+					"reward": {
+						"type": "number",
+						"format": "double"
+					},
+					"tags": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"winRate": {
+						"type": "number",
+						"format": "double"
+					},
+					"avgProfitLoss": {
+						"type": "number",
+						"format": "double"
+					},
+					"riskRewardRatio": {
+						"type": "number",
+						"format": "double"
+					},
+					"maxDrawdown": {
+						"type": "number",
+						"format": "double"
+					},
+					"profitFactor": {
+						"type": "number",
+						"format": "double"
+					},
+					"sharpeRatio": {
+						"type": "number",
+						"format": "double"
+					},
+					"volatility": {
+						"type": "number",
+						"format": "double"
+					},
+					"sortinoRatio": {
+						"type": "number",
+						"format": "double"
+					},
+					"avgHoldingPeriod": {
+						"type": "number",
+						"format": "double"
+					},
+					"improvementSuggestions": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"stopLossLevel": {
+						"type": "number",
+						"format": "double"
+					},
+					"positionSize": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"tradeType",
+					"entryDate",
+					"exitDate",
+					"userId",
+					"symbol",
+					"entryPrice",
+					"exitPrice",
+					"risk",
+					"reward",
+					"tags",
+					"createdAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Partial_ITrade_": {
+				"properties": {
+					"tradeType": {
+						"type": "string"
+					},
+					"entryDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"exitDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"userId": {
+						"type": "string"
+					},
+					"symbol": {
+						"type": "string"
+					},
+					"entryPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"exitPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"risk": {
+						"type": "number",
+						"format": "double"
+					},
+					"reward": {
+						"type": "number",
+						"format": "double"
+					},
+					"tags": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"winRate": {
+						"type": "number",
+						"format": "double"
+					},
+					"avgProfitLoss": {
+						"type": "number",
+						"format": "double"
+					},
+					"riskRewardRatio": {
+						"type": "number",
+						"format": "double"
+					},
+					"maxDrawdown": {
+						"type": "number",
+						"format": "double"
+					},
+					"profitFactor": {
+						"type": "number",
+						"format": "double"
+					},
+					"sharpeRatio": {
+						"type": "number",
+						"format": "double"
+					},
+					"volatility": {
+						"type": "number",
+						"format": "double"
+					},
+					"sortinoRatio": {
+						"type": "number",
+						"format": "double"
+					},
+					"avgHoldingPeriod": {
+						"type": "number",
+						"format": "double"
+					},
+					"improvementSuggestions": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"stopLossLevel": {
+						"type": "number",
+						"format": "double"
+					},
+					"positionSize": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "backend",
+		"version": "1.0.0",
+		"license": {
+			"name": "MIT"
+		},
+		"contact": {
+			"name": "Bartek-Figat"
+		}
+	},
+	"paths": {
+		"/profile/user-profile-info": {
+			"get": {
+				"operationId": "GetUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserProfile"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/profile/update-profile": {
+			"post": {
+				"operationId": "UpdateProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateProfileRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/profile/all-users": {
+			"get": {
+				"operationId": "GetAllUsers",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/UserProfile"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/profile/delete-user/{userId}": {
+			"delete": {
+				"operationId": "DeleteUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/profile/user/{userId}": {
+			"get": {
+				"operationId": "GetUserById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserProfile"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/trades/create": {
+			"post": {
+				"operationId": "CreateTrade",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICreateTrade"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/trades/get/{id}": {
+			"get": {
+				"operationId": "GetTradeById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ITrade"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/trades/list": {
+			"get": {
+				"operationId": "GetTrades",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "skip",
+						"required": false,
+						"schema": {
+							"default": 0,
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"default": 10,
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/api/trades/update/{id}": {
+			"put": {
+				"operationId": "UpdateTrade",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_ITrade_"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/trades/delete/{id}": {
+			"delete": {
+				"operationId": "DeleteTrade",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/trades/filter": {
+			"get": {
+				"operationId": "FilterTrades",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "filter",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"default": 10,
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/api/payment/publishable-key": {
+			"get": {
+				"operationId": "SendPublishableKey",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"publishableKey": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"publishableKey"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Payment"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/api/payment/create": {
+			"post": {
+				"operationId": "CreateOneTimePayment",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"clientSecret": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"clientSecret"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Payment"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {}
+						}
+					}
+				}
+			}
+		},
+		"/api/payment/{userId}": {
+			"get": {
+				"operationId": "GetPayment",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Payment"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/journal/create": {
+			"post": {
+				"operationId": "CreateJournal",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Journal"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"authorId": {
+										"type": "string"
+									},
+									"content": {
+										"type": "string"
+									},
+									"title": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"authorId",
+									"content",
+									"title"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/journal/{journalId}": {
+			"get": {
+				"operationId": "GetJournalById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Journal"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "journalId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateJournal",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Journal"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "journalId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"content": {
+										"type": "string"
+									},
+									"title": {
+										"type": "string"
+									}
+								},
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteJournal",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Journal"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "journalId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/auth/register": {
+			"post": {
+				"operationId": "Registration",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/login": {
+			"post": {
+				"operationId": "Login",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"token": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"token"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/validate-token": {
+			"post": {
+				"operationId": "ValidateToken",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/logout": {
+			"post": {
+				"operationId": "Logout",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Auth"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

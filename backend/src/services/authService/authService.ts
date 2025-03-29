@@ -1,14 +1,16 @@
 import { config } from "dotenv";
 import { hash, genSalt, compare } from "bcrypt";
 import { ObjectId } from "mongodb";
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 import { Database } from "../../db/dbConnect";
 import {
+  IForgotPassword,
   ILogin,
   ILogout,
   IRegister,
+  IResetPassword,
   ISendVerificationEmailData,
-} from "src/interface/interface";
+} from "../../interface/interface";
 import { ApiError } from "../../errorHandler/error";
 import { EmailHandler } from "../emailService/EmailHandler";
 import { TokenService } from "../tokenService/token";
@@ -68,6 +70,9 @@ export class AuthService {
       const user = await this.userCollection.findOne({ email });
       if (!user) throw new ApiError("Not Found", 404, "Not Found");
 
+      if (!user.isVerified)
+        throw new ApiError("Unauthorized", 401, "Unauthorized");
+
       const isMatch = await compare(password, user.password);
       if (!isMatch) throw new ApiError("Unauthorized", 401, "Unauthorized");
 
@@ -96,11 +101,17 @@ export class AuthService {
   }
 
   //================Validate Token===============================
-  async validateToken({ token }: any): Promise<boolean> {
+  async validateToken({ token }: any, req: ILogout): Promise<boolean> {
+    const {
+      user: {
+        decoded: { userId },
+      },
+    } = req;
+
+    console.log("userId", userId);
     try {
-      const decoded = this.tokenService.verifyAccessToken(token);
       const user = await this.userCollection.findOne(
-        { authorizationToken: token, _id: new ObjectId(decoded.userId) },
+        { authorizationToken: token, _id: new ObjectId(userId) },
         { projection: { _id: 1, isLogin: 1 } }
       );
 
@@ -109,7 +120,7 @@ export class AuthService {
       }
 
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error validating token:", error);
       throw new ApiError("Unauthorized", 500, "Unauthorized");
     }
@@ -134,11 +145,60 @@ export class AuthService {
           },
         }
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new ApiError(
         "Logout failed",
         500,
         "An error occurred during logout"
+      );
+    }
+  }
+
+  //================Forgot Password===============================
+  async forgotPassword({ email }: IForgotPassword): Promise<void> {
+    try {
+      const user = await this.userCollection.findOne({ email });
+      if (!user) throw new ApiError("Email not found", 404, "Not Found");
+
+      const resetToken = sign({ email }, process.env.JWT_SECRET || "", {
+        expiresIn: "1h",
+      });
+
+      const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+      await this.emailHandler.sendPasswordResetEmail(email, resetLink);
+    } catch (error) {
+      console.error("Forgot Password error:", error);
+      throw new ApiError(
+        "Forgot Password failed",
+        500,
+        "An error occurred while processing your request"
+      );
+    }
+  }
+
+  //================Reset Password===============================
+  async resetPassword({ token, newPassword }: IResetPassword): Promise<void> {
+    try {
+      const decoded: any = verify(token, process.env.JWT_SECRET || "");
+      const email = decoded.email;
+
+      const user = await this.userCollection.findOne({ email });
+      if (!user) throw new ApiError("Invalid token", 400, "Bad Request");
+
+      const salt = await genSalt(10);
+      const hashedPassword = await hash(newPassword, salt);
+
+      await this.userCollection.updateOne(
+        { email },
+        { $set: { password: hashedPassword } }
+      );
+    } catch (error) {
+      console.error("Reset Password error:", error);
+      throw new ApiError(
+        "Reset Password failed",
+        500,
+        "An error occurred while resetting your password"
       );
     }
   }

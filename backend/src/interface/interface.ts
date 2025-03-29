@@ -10,6 +10,15 @@ interface ILogin {
   email: string;
 }
 
+export interface IForgotPassword {
+  email: string;
+}
+
+export interface IResetPassword {
+  token: string;
+  newPassword: string;
+}
+
 interface ISendVerificationEmailData {
   email?: string; // Email is optional
   password?: string; // Password is optional

@@ -63,8 +63,8 @@ app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-app.use((_req: Request, res: Response, _next: NextFunction) => {
-  res.status(404).json({ error: "Route not found" });
-});
+// app.use((_req: Request, res: Response, _next: NextFunction) => {
+//   res.status(404).json({ error: "Route not found" });
+// });
 
 export default app;

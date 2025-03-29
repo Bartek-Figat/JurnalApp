@@ -39,15 +39,18 @@ export class LoginDto {
 export class RegisterDto {
   @IsNotEmpty()
   password!: string;
+
   @IsEmail()
-  email!: string | undefined;
+  @IsNotEmpty()
+  email!: string;
+
   @IsMatch("password", { message: "Does not match" })
-  matchPassword!: string;
+  confirmPassword!: string;
+
   @IsNotEmpty()
   @IsBoolean()
-  agreementToWebsitePolicy!: boolean | undefined;
+  agreementToWebsitePolicy!: boolean;
 }
-
 export type LogoutDto = {
   user: { decoded: { userId: string }; authHeader: string };
 };

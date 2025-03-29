@@ -742,8 +742,10 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsCustomAuthController_validateToken: Record<string, TsoaRoute.ParameterSchema> = {
                 token: {"in":"body","name":"token","required":true,"dataType":"any"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.post('/api/auth/validate-token',
+            authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(CustomAuthController)),
             ...(fetchMiddlewares<RequestHandler>(CustomAuthController.prototype.validateToken)),
 
@@ -790,6 +792,66 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'logout',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCustomAuthController_forgotPassword: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"body","name":"req","required":true,"dataType":"any"},
+        };
+        app.post('/api/auth/forgot-password',
+            ...(fetchMiddlewares<RequestHandler>(CustomAuthController)),
+            ...(fetchMiddlewares<RequestHandler>(CustomAuthController.prototype.forgotPassword)),
+
+            async function CustomAuthController_forgotPassword(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCustomAuthController_forgotPassword, request, response });
+
+                const controller = new CustomAuthController();
+
+              await templateService.apiHandler({
+                methodName: 'forgotPassword',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCustomAuthController_resetPassword: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"body","name":"req","required":true,"dataType":"any"},
+        };
+        app.post('/api/auth/reset-password',
+            ...(fetchMiddlewares<RequestHandler>(CustomAuthController)),
+            ...(fetchMiddlewares<RequestHandler>(CustomAuthController.prototype.resetPassword)),
+
+            async function CustomAuthController_resetPassword(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCustomAuthController_resetPassword, request, response });
+
+                const controller = new CustomAuthController();
+
+              await templateService.apiHandler({
+                methodName: 'resetPassword',
                 controller,
                 response,
                 next,

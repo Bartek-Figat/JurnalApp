@@ -41,14 +41,27 @@ export class CustomAuthController extends Controller {
     return this.authService.login(req);
   }
 
+  @Security("jwt")
   @Post("validate-token")
-  async validateToken(@Body() token: any) {
-    return this.authService.validateToken(token);
+  async validateToken(@Body() token: any, @Request() req: any) {
+    return this.authService.validateToken(token, req);
   }
 
   @Security("jwt")
   @Post("logout")
   async logout(@Request() req: any): Promise<void> {
     return this.authService.logout(req);
+  }
+
+  @Post("forgot-password")
+  @Middlewares([CustomAuthController.rateLimiter])
+  async forgotPassword(@Body() req: any): Promise<void> {
+    return this.authService.forgotPassword(req);
+  }
+
+  @Post("reset-password")
+  @Middlewares([CustomAuthController.rateLimiter])
+  async resetPassword(@Body() req: any): Promise<void> {
+    return this.authService.resetPassword(req);
   }
 }

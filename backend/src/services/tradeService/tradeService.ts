@@ -17,23 +17,18 @@ export class TradeService {
       if (!userId) {
         throw new ApiError("Invalid request", 400, "User ID is missing");
       }
+
       const validatedTrade = this.tradeValidator.validate(trade);
 
-      const result = await this.db.insertOne({
+      const tradeToInsert = {
         authorId: userId,
         ...validatedTrade,
-      });
+      };
+
+      const result = await this.db.insertOne(tradeToInsert);
 
       return result;
     } catch (error) {
-      console.error("Error creating trade:", error);
-
-      // If the error is an instance of ApiError, rethrow it
-      if (error instanceof ApiError) {
-        throw error;
-      }
-
-      // Otherwise, throw a generic ApiError
       throw new ApiError(
         "Failed to create trade",
         500,
@@ -59,10 +54,41 @@ export class TradeService {
     }
   }
 
-  async getTrades(skip: number = 0, limit: number = 10) {
+  async getTrades(skip: number = 0, limit: number = 10, req: any) {
+    const { user: { decoded: { userId = null } = {} } = {} } = req;
+    const calculateProfitLoss = (
+      entryPrice: number,
+      exitPrice: number,
+      quantity: number,
+      fees: number
+    ) => {
+      const profitLoss = (exitPrice - entryPrice) * quantity - fees;
+      const gainPercentage = (
+        (profitLoss / (entryPrice * quantity)) *
+        100
+      ).toFixed(2);
+      return { profitLoss: profitLoss.toFixed(2), gainPercentage };
+    };
+
     try {
-      const trades = await this.db.find().skip(skip).limit(limit).toArray();
-      return trades;
+      const trades = await this.db
+        .find({ authorId: userId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .toArray();
+
+      const tradesWithProfitLoss = trades.map((trade) => {
+        const { profitLoss, gainPercentage } = calculateProfitLoss(
+          trade.entryPrice,
+          trade.exitPrice,
+          trade.quantity,
+          trade.fees
+        );
+        return { ...trade, profitLoss, gainPercentage };
+      });
+
+      return tradesWithProfitLoss;
     } catch (error) {
       console.error("Error retrieving trades:", error);
       throw new ApiError("Failed to retrieve trades", 500);

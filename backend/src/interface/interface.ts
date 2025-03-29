@@ -65,6 +65,7 @@ interface ITrade {
 }
 
 interface ICreateTrade {
+  tradeType: any;
   tradeOutcome: string; // Outcome of the trade (e.g., win, loss)
   riskPercentage?: number; // Percentage of risk for the trade
   positionType?: "long" | "short" | "spot"; // Type of position taken
@@ -77,12 +78,9 @@ interface ICreateTrade {
   risk: number; // Amount of risk taken in the trade
   reward: number; // Potential reward from the trade
   tags: string[]; // Tags associated with the trade for categorization
-  createdAt: Date; // Date when the trade was created
-  stopLossLevel?: number; // Stop loss level for the trade
-  positionSize?: number; // Size of the position taken
-  tradeType: "stock" | "forex" | "crypto" | "option" | "crypto spot"; // Type of trade
-  entryDate: Date; // Date when the trade was entered
-  exitDate: Date; // Date when the trade was exited
+  createdAt: string; // Date when the trade was created
+  entryDate: string; // Date when the trade was entered
+  exitDate: string; // Date when the trade was exited
   quantity?: number; // Quantity for stock and crypto trades
   optionType?: "call" | "put"; // Type of option (if applicable)
   strikePrice?: number; // Strike price for options
@@ -90,6 +88,16 @@ interface ICreateTrade {
   units?: number; // Number of units for forex trades
   usdExchangeRate?: number; // Exchange rate for forex trades
   fees?: number; // Potential fees associated with the trade
+  winRate?: number; // Default value for winRate
+  avgProfitLoss?: number; // Default value for avgProfitLoss
+  riskRewardRatio?: number; // Default value for riskRewardRatio
+  maxDrawdown?: number; // Default value for maxDrawdown
+  sharpeRatio?: number; // Default value for sharpeRatio
+  profitFactor?: number; // Default value for profitFactor
+  volatility?: number; // Default value for volatility
+  sortinoRatio?: number; // Default value for sortinoRatio
+  avgHoldingPeriod?: number; // Default value for avgHoldingPeriod
+  improvementSuggestions?: any[]; // Default value for improvementSuggestions
 }
 
 export {

@@ -13,6 +13,7 @@ export async function expressAuthentication(
   }
 
   const authHeader = req.headers.authorization;
+
   if (!authHeader) {
     throw new ApiError("Unauthorized", 401, "Unauthorized");
   }
@@ -21,8 +22,6 @@ export async function expressAuthentication(
   if (bearer !== "Bearer" || !token) {
     throw new ApiError("Unauthorized", 401, "Unauthorized");
   }
-
-  console.log("token", token);
 
   const database = new Database();
   const collection = database.getCollection("user");

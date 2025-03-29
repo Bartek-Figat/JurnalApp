@@ -39,138 +39,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ICreateTrade": {
-				"properties": {
-					"tradeOutcome": {
-						"type": "string"
-					},
-					"riskPercentage": {
-						"type": "number",
-						"format": "double"
-					},
-					"positionType": {
-						"type": "string",
-						"enum": [
-							"long",
-							"short",
-							"spot"
-						]
-					},
-					"leverage": {
-						"type": "number",
-						"format": "double"
-					},
-					"costBasis": {
-						"type": "number",
-						"format": "double"
-					},
-					"profitLoss": {
-						"type": "number",
-						"format": "double"
-					},
-					"symbol": {
-						"type": "string"
-					},
-					"entryPrice": {
-						"type": "number",
-						"format": "double"
-					},
-					"exitPrice": {
-						"type": "number",
-						"format": "double"
-					},
-					"risk": {
-						"type": "number",
-						"format": "double"
-					},
-					"reward": {
-						"type": "number",
-						"format": "double"
-					},
-					"tags": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"stopLossLevel": {
-						"type": "number",
-						"format": "double"
-					},
-					"positionSize": {
-						"type": "number",
-						"format": "double"
-					},
-					"tradeType": {
-						"type": "string",
-						"enum": [
-							"stock",
-							"forex",
-							"crypto",
-							"option",
-							"crypto spot"
-						]
-					},
-					"entryDate": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"exitDate": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"quantity": {
-						"type": "number",
-						"format": "double"
-					},
-					"optionType": {
-						"type": "string",
-						"enum": [
-							"call",
-							"put"
-						]
-					},
-					"strikePrice": {
-						"type": "number",
-						"format": "double"
-					},
-					"optionPremium": {
-						"type": "number",
-						"format": "double"
-					},
-					"units": {
-						"type": "number",
-						"format": "double"
-					},
-					"usdExchangeRate": {
-						"type": "number",
-						"format": "double"
-					},
-					"fees": {
-						"type": "number",
-						"format": "double"
-					}
-				},
-				"required": [
-					"tradeOutcome",
-					"symbol",
-					"entryPrice",
-					"exitPrice",
-					"risk",
-					"reward",
-					"tags",
-					"createdAt",
-					"tradeType",
-					"entryDate",
-					"exitDate"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"ITrade": {
 				"properties": {
 					"tradeType": {
@@ -599,9 +467,7 @@
 					"required": true,
 					"content": {
 						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/ICreateTrade"
-							}
+							"schema": {}
 						}
 					}
 				}
@@ -654,7 +520,11 @@
 				"tags": [
 					"Trades"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "query",
@@ -786,6 +656,54 @@
 						}
 					}
 				]
+			}
+		},
+		"/api/trades/metrics": {
+			"get": {
+				"operationId": "GetMetrics",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/wins-losses": {
+			"get": {
+				"operationId": "GetWinsAndLosses",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
 			}
 		},
 		"/api/payment/publishable-key": {

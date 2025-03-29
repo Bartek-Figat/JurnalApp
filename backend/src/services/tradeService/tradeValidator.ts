@@ -62,7 +62,7 @@ export class TradeValidator {
   }
 
   private calculateStockProfitLoss(trade: ICreateTrade): number {
-    return (trade.exitPrice - trade.entryPrice) * trade.quantity!;
+    return (trade.exitPrice - trade.entryPrice) * (trade.quantity || 0);
   }
 
   private validateForexTrade(trade: ICreateTrade) {
@@ -82,8 +82,8 @@ export class TradeValidator {
   private calculateForexProfitLoss(trade: ICreateTrade): number {
     return (
       (trade.exitPrice - trade.entryPrice) *
-      trade.units! *
-      trade.usdExchangeRate!
+      (trade.units || 0) *
+      (trade.usdExchangeRate || 1) // Default to 1 to avoid multiplication by undefined
     );
   }
 
@@ -103,7 +103,9 @@ export class TradeValidator {
 
   private calculateCryptoProfitLoss(trade: ICreateTrade): number {
     return (
-      (trade.exitPrice - trade.entryPrice) * trade.quantity! * trade.leverage!
+      (trade.exitPrice - trade.entryPrice) *
+      (trade.quantity || 0) *
+      (trade.leverage || 1) // Default to 1
     );
   }
 
@@ -117,7 +119,7 @@ export class TradeValidator {
   }
 
   private calculateCryptoSpotProfitLoss(trade: ICreateTrade): number {
-    return (trade.exitPrice - trade.entryPrice) * trade.quantity!;
+    return (trade.exitPrice - trade.entryPrice) * (trade.quantity || 0);
   }
 
   private validateOptionTrade(trade: ICreateTrade) {
@@ -137,8 +139,10 @@ export class TradeValidator {
 
   private calculateOptionProfitLoss(trade: ICreateTrade): number {
     return (
-      (trade.exitPrice - trade.strikePrice! - trade.optionPremium!) *
-      trade.quantity!
+      (trade.exitPrice -
+        (trade.strikePrice || 0) -
+        (trade.optionPremium || 0)) *
+      (trade.quantity || 0)
     );
   }
 }

@@ -5,6 +5,38 @@ import { tradeQueryFilter } from "./queryFunction";
 import { ObjectId } from "mongodb";
 import { TradeValidator } from "./tradeValidator";
 
+// interface Filter {
+//   page: number;
+//   [key: string]: any;
+// }
+
+// interface Trade {
+//   entryPrice: number;
+//   exitPrice: number;
+//   quantity: number;
+//   fees: number;
+//   [key: string]: any;
+// }
+
+// interface TradesResponse {
+//   trades: Trade[];
+//   count: number;
+//   tradesWithProfitLoss: Trade[];
+// }
+
+const calculateProfitLoss = (
+  entryPrice: number,
+  exitPrice: number,
+  quantity: number,
+  fees: number
+) => {
+  const profitLoss = (exitPrice - entryPrice) * quantity - fees;
+  const gainPercentage = ((profitLoss / (entryPrice * quantity)) * 100).toFixed(
+    2
+  );
+  return { profitLoss: profitLoss.toFixed(2), gainPercentage };
+};
+
 export class TradeService {
   private readonly trades: string = "trades";
   private db = new Database().getCollection(this.trades);
@@ -56,19 +88,6 @@ export class TradeService {
 
   async getTrades(skip: number = 0, limit: number = 10, req: any) {
     const { user: { decoded: { userId = null } = {} } = {} } = req;
-    const calculateProfitLoss = (
-      entryPrice: number,
-      exitPrice: number,
-      quantity: number,
-      fees: number
-    ) => {
-      const profitLoss = (exitPrice - entryPrice) * quantity - fees;
-      const gainPercentage = (
-        (profitLoss / (entryPrice * quantity)) *
-        100
-      ).toFixed(2);
-      return { profitLoss: profitLoss.toFixed(2), gainPercentage };
-    };
 
     try {
       const trades = await this.db
@@ -115,24 +134,34 @@ export class TradeService {
     }
   }
 
-  async filterTrades(req: { user: any }, filter: any, limit: number = 10) {
-    const id = req.user;
+  async filterTrades(req: any) {
+    const { user: { decoded: { userId = null } = {} } = {} } = req;
+    const { page, ...rest } = req.query;
+    const limit = 10;
     try {
-      const { page, ...rest } = filter;
       const query = tradeQueryFilter(rest);
       const skip = (page - 1) * limit;
       const trades = await this.db
-        .find({ _id: id, $and: [query] })
+        .find({ authorId: userId, $and: [query] })
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .toArray();
 
-      const count = await this.db.countDocuments({
-        _id: id,
-        ...query,
+      //count all trades by authorId use length of the array
+      const tradesCount = await this.db.find({ authorId: userId }).toArray();
+
+      const tradesWithProfitLoss = trades.map((trade) => {
+        const { profitLoss, gainPercentage } = calculateProfitLoss(
+          trade.entryPrice,
+          trade.exitPrice,
+          trade.quantity,
+          trade.fees
+        );
+        return { ...trade, profitLoss, gainPercentage };
       });
 
-      return { trades, count };
+      return { trades: tradesWithProfitLoss, count: tradesCount.length };
     } catch (error) {
       console.error("Error filtering trades:", error);
       throw new ApiError("Failed to filter trades", 500);

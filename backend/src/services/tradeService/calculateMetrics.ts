@@ -6,36 +6,46 @@ export class CalculateTradeMetricsRepository {
 
   async calculateMetrics(req: any) {
     const { user: { decoded: { userId = null } = {} } = {} } = req;
-    const userTrades = await this.db.find({ authorId: userId }).toArray();
-    function roundToTwoDecimals(num: number): number {
-      return Math.round(num * 100) / 100;
-    }
 
-    const investmentReturn = userTrades.reduce((total, trade) => {
-      return total + (trade.exitPrice - trade.entryPrice) * trade.quantity;
-    }, 0);
+    const pipeline = [
+      { $match: { authorId: userId } },
+      {
+        $group: {
+          _id: null,
+          totalInvestmentReturn: {
+            $sum: {
+              $multiply: [
+                { $subtract: ["$exitPrice", "$entryPrice"] },
+                "$quantity",
+              ],
+            },
+          },
+          totalFees: { $sum: "$fees" },
+          totalInvestment: {
+            $sum: { $multiply: ["$entryPrice", "$quantity"] },
+          },
+          totalSavings: { $sum: "$profitLoss" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          investmentReturn: {
+            $round: ["$totalInvestmentReturn", 2],
+          },
+          expenseRatio: {
+            $round: [{ $divide: ["$totalFees", "$totalInvestment"] }, 2],
+          },
+          savingsRate: {
+            $round: [{ $divide: ["$totalSavings", "$totalInvestment"] }, 2],
+          },
+        },
+      },
+    ];
 
-    const totalFees = userTrades.reduce(
-      (total, trade) => total + trade.fees,
-      0
-    );
-    const totalInvestment = userTrades.reduce(
-      (total, trade) => total + trade.entryPrice * trade.quantity,
-      0
-    );
-    const expenseRatio = totalFees / totalInvestment;
-
-    const totalSavings = userTrades.reduce(
-      (total, trade) => total + trade.profitLoss,
-      0
-    );
-    const savingsRate = totalSavings / totalInvestment;
-
-    return {
-      investmentReturn: roundToTwoDecimals(investmentReturn),
-      expenseRatio: roundToTwoDecimals(expenseRatio),
-      savingsRate: roundToTwoDecimals(savingsRate),
-    };
+    const result = await this.db.aggregate(pipeline).toArray();
+    console.log(result);
+    return result[0];
   }
 
   // ==============================================================
@@ -71,6 +81,13 @@ export class CalculateTradeMetricsRepository {
       {
         $group: {
           _id: "$_id.tradeType",
+          totalWins: {
+            $sum: { $cond: [{ $eq: ["$_id.tradeOutcome", "win"] }, 1, 0] },
+          },
+          totalLosses: {
+            $sum: { $cond: [{ $eq: ["$_id.tradeOutcome", "loss"] }, 1, 0] },
+          },
+          totalTrades: { $sum: 1 },
           wins: {
             $push: {
               outcome: "$_id.tradeOutcome",
@@ -88,76 +105,221 @@ export class CalculateTradeMetricsRepository {
           totalInvestment: { $first: "$totalInvestment" },
         },
       },
+      {
+        $project: {
+          _id: 0,
+          tradeType: "$_id",
+          totalWins: 1,
+          totalLosses: 1,
+          totalTrades: 1,
+          winPercentage: {
+            $round: [
+              { $multiply: [{ $divide: ["$totalWins", "$totalTrades"] }, 100] },
+              2,
+            ],
+          },
+          lossPercentage: {
+            $round: [
+              {
+                $multiply: [{ $divide: ["$totalLosses", "$totalTrades"] }, 100],
+              },
+              2,
+            ],
+          },
+          wins: {
+            $filter: {
+              input: "$wins",
+              as: "win",
+              cond: { $eq: ["$$win.outcome", "win"] },
+            },
+          },
+          losses: {
+            $filter: {
+              input: "$losses",
+              as: "loss",
+              cond: { $eq: ["$$loss.outcome", "loss"] },
+            },
+          },
+          totalInvestment: 1,
+        },
+      },
+      {
+        $project: {
+          tradeType: 1,
+          wins: { $arrayElemAt: ["$wins", 0] },
+          losses: { $arrayElemAt: ["$losses", 0] },
+          totalInvestment: 1,
+          winPercentage: 1,
+          lossPercentage: 1,
+        },
+      },
     ];
 
-    const results = await this.db.aggregate(pipeline).toArray();
+    return await this.db.aggregate(pipeline).toArray();
+  }
 
-    console.log(...results);
+  async calculateMetricsAdvence(req: any) {
+    const { user: { decoded: { userId = null } = {} } = {} } = req;
 
-    const tradeMetrics = {
-      totalInvestment: 0,
-      totalWins: 0,
-      totalLosses: 0,
-      totalTrades: 0,
-      gainPercentage: 0,
-      wins: {
-        stock: { count: 0, totalProfit: 0, avgProfit: 0 },
-        forex: { count: 0, totalProfit: 0, avgProfit: 0 },
-        crypto: { count: 0, totalProfit: 0, avgProfit: 0 },
-        "crypto spot": { count: 0, totalProfit: 0, avgProfit: 0 },
-        option: { count: 0, totalProfit: 0, avgProfit: 0 },
+    const pipeline = [
+      { $match: { authorId: userId } },
+      {
+        $group: {
+          _id: null,
+          totalInvestmentReturn: {
+            $sum: {
+              $multiply: [
+                { $subtract: ["$exitPrice", "$entryPrice"] },
+                "$quantity",
+              ],
+            },
+          },
+          totalFees: { $sum: "$fees" },
+          totalInvestment: {
+            $sum: { $multiply: ["$entryPrice", "$quantity"] },
+          },
+          totalSavings: { $sum: "$profitLoss" },
+          totalProfit: {
+            $sum: {
+              $cond: [{ $eq: ["$tradeOutcome", "win"] }, "$profitLoss", 0],
+            },
+          },
+          totalLoss: {
+            $sum: {
+              $cond: [
+                { $eq: ["$tradeOutcome", "loss"] },
+                { $abs: "$profitLoss" },
+                0,
+              ],
+            },
+          },
+          winCount: {
+            $sum: { $cond: [{ $eq: ["$tradeOutcome", "win"] }, 1, 0] },
+          },
+          lossCount: {
+            $sum: { $cond: [{ $eq: ["$tradeOutcome", "loss"] }, 1, 0] },
+          },
+          totalCount: { $sum: 1 },
+        },
       },
-      losses: {
-        stock: { count: 0, totalLoss: 0, avgLoss: 0 },
-        forex: { count: 0, totalLoss: 0, avgLoss: 0 },
-        crypto: { count: 0, totalLoss: 0, avgLoss: 0 },
-        "crypto spot": { count: 0, totalLoss: 0, avgLoss: 0 },
-        option: { count: 0, totalLoss: 0, avgLoss: 0 },
+      {
+        $project: {
+          _id: 0,
+          investmentReturn: {
+            $round: ["$totalInvestmentReturn", 2],
+          },
+          expenseRatio: {
+            $round: [{ $divide: ["$totalFees", "$totalInvestment"] }, 2],
+          },
+          savingsRate: {
+            $round: [{ $divide: ["$totalSavings", "$totalInvestment"] }, 2],
+          },
+          transactionCosts: "$totalFees",
+          ROI: {
+            $round: [
+              {
+                $multiply: [
+                  { $divide: ["$totalInvestmentReturn", "$totalInvestment"] },
+                  100,
+                ],
+              },
+              2,
+            ],
+          },
+          breakEvenPercentage: {
+            $round: [
+              {
+                $multiply: [
+                  { $divide: ["$totalFees", "$totalInvestment"] },
+                  100,
+                ],
+              },
+              2,
+            ],
+          },
+          riskRewardRatio: {
+            $round: [
+              {
+                $divide: ["$totalProfit", "$totalLoss"],
+              },
+              2,
+            ],
+          },
+          netProfit: {
+            $round: [
+              {
+                $subtract: ["$totalProfit", "$totalLoss"],
+              },
+              2,
+            ],
+          },
+          winPercentage: {
+            $round: [
+              {
+                $multiply: [{ $divide: ["$winCount", "$totalCount"] }, 100],
+              },
+              2,
+            ],
+          },
+        },
       },
-    };
+    ];
 
-    results.forEach((result) => {
-      const type = result._id.tradeType as keyof typeof tradeMetrics.wins;
+    const result = await this.db.aggregate(pipeline).toArray();
+    console.log(result);
+    return result[0];
+  }
 
-      const winData = result.wins.find(
-        (w: { outcome: string }) => w.outcome === "win"
-      ) || { totalProfit: 0, count: 0 };
-      const lossData = result.losses.find(
-        (l: { outcome: string }) => l.outcome === "loss"
-      ) || { totalLoss: 0, count: 0 };
+  async calculateWinLossPercentage(req: any) {
+    const { user: { decoded: { userId = null } = {} } = {} } = req;
 
-      tradeMetrics.wins[type].count += winData.count;
-      tradeMetrics.wins[type].totalProfit += winData.totalProfit;
-      tradeMetrics.losses[type].count += lossData.count;
-      tradeMetrics.losses[type].totalLoss += lossData.totalLoss;
+    const pipeline = [
+      { $match: { authorId: userId } },
+      {
+        $group: {
+          _id: {
+            tradeType: "$tradeType",
+            tradeOutcome: "$tradeOutcome",
+          },
+          winCount: {
+            $sum: { $cond: [{ $eq: ["$tradeOutcome", "win"] }, 1, 0] },
+          },
+          lossCount: {
+            $sum: { $cond: [{ $eq: ["$tradeOutcome", "loss"] }, 1, 0] },
+          },
+          totalCount: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.tradeType",
+          wins: { $sum: "$winCount" },
+          losses: { $sum: "$lossCount" },
+          totalCount: { $sum: "$totalCount" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          tradeType: "$_id",
+          winPercentage: {
+            $round: [
+              { $multiply: [{ $divide: ["$wins", "$totalCount"] }, 100] },
+              2,
+            ],
+          },
+          lossPercentage: {
+            $round: [
+              { $multiply: [{ $divide: ["$losses", "$totalCount"] }, 100] },
+              2,
+            ],
+          },
+        },
+      },
+    ];
 
-      tradeMetrics.totalInvestment += result.totalInvestment;
-      tradeMetrics.totalTrades += winData.count + lossData.count;
-      tradeMetrics.totalWins += winData.totalProfit;
-      tradeMetrics.totalLosses += lossData.totalLoss;
-    });
-
-    for (const type of Object.keys(tradeMetrics.wins) as Array<
-      keyof typeof tradeMetrics.wins
-    >) {
-      if (tradeMetrics.wins[type].count > 0) {
-        tradeMetrics.wins[type].avgProfit =
-          tradeMetrics.wins[type].totalProfit / tradeMetrics.wins[type].count;
-      }
-      if (tradeMetrics.losses[type].count > 0) {
-        tradeMetrics.losses[type].avgLoss =
-          tradeMetrics.losses[type].totalLoss / tradeMetrics.losses[type].count;
-      }
-    }
-
-    // Calculate gain percentage
-    if (tradeMetrics.totalInvestment > 0) {
-      tradeMetrics.gainPercentage =
-        ((tradeMetrics.totalWins - tradeMetrics.totalLosses) /
-          tradeMetrics.totalInvestment) *
-        100;
-    }
-
-    return results;
+    const result = await this.db.aggregate(pipeline).toArray();
+    console.log(result);
+    return result;
   }
 }

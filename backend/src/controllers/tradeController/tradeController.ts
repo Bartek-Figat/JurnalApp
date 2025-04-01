@@ -21,7 +21,7 @@ import { ApiError } from "../../errorHandler/error";
 @Tags("Trades")
 export class TradeController extends Controller {
   private tradeService = new TradeService();
-  private metricsService = new CalculateTradeMetricsRepository(); // Initialize metrics service
+  private metricsService = new CalculateTradeMetricsRepository();
 
   @Post("create")
   @Security("jwt")
@@ -82,15 +82,11 @@ export class TradeController extends Controller {
     }
   }
 
-  @Get("filter")
+  @Get("filter-trades")
   @Security("jwt")
-  async filterTrades(
-    @Request() req: any,
-    @Query() filter: any,
-    @Query() limit: number = 10
-  ): Promise<any> {
+  async filterTrades(@Request() req: any): Promise<any> {
     try {
-      return await this.tradeService.filterTrades(req.user, filter, limit);
+      return await this.tradeService.filterTrades(req);
     } catch (error) {
       throw new ApiError("Failed to filter trades", 500);
     }

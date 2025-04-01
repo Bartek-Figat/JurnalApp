@@ -68,13 +68,18 @@ export class AuthService {
   async login({ email, password }: ILogin): Promise<{ token: string }> {
     try {
       const user = await this.userCollection.findOne({ email });
-      if (!user) throw new ApiError("Not Found", 404, "Not Found");
+      if (!user) {
+        throw new ApiError("Not Found", 404, "Not Found");
+      }
 
-      if (!user.isVerified)
-        throw new ApiError("Unauthorized", 401, "Unauthorized");
+      if (!user.isVerified) {
+        throw new ApiError("Unauthorized", 401, "User not verified");
+      }
 
       const isMatch = await compare(password, user.password);
-      if (!isMatch) throw new ApiError("Unauthorized", 401, "Unauthorized");
+      if (!isMatch) {
+        throw new ApiError("Unauthorized", 401, "Unauthorized");
+      }
 
       const userIdAsString = user._id.toString();
       const token = this.tokenService.generateAccessToken(userIdAsString);
@@ -95,7 +100,7 @@ export class AuthService {
       throw new ApiError(
         "Login failed",
         500,
-        error.message || "An error occurred during login"
+        "An unexpected error occurred during login"
       );
     }
   }

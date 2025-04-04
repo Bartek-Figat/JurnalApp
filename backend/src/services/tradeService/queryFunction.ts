@@ -1,39 +1,35 @@
 export function tradeQueryFilter(filter: {
-  tradeType: any;
-  symbol: any;
-  startDate: string | number | Date;
-  endDate: string | number | Date;
-  minWinRate: undefined;
-  maxWinRate: undefined;
-  minProfitLoss: undefined;
-  maxProfitLoss: undefined;
-}): any {
-  const query: any = {};
+  tradeType?: string;
+  symbol?: string;
+  startDate?: string | number | Date;
+  endDate?: string | number | Date;
+  minWinRate?: number;
+  maxWinRate?: number;
+  minProfitLoss?: number;
+  maxProfitLoss?: number;
+  tradeOutcome?: string;
+}): Record<string, any> {
+  const query: Record<string, any> = {};
 
-  // if (filter.userId) query.userId = filter.userId;
   if (filter.tradeType) query.tradeType = filter.tradeType;
-  if (filter.symbol) query.symbol = filter.symbol; // Ensure symbol is included
+  if (filter.symbol) query.symbol = filter.symbol;
+  if (filter.tradeOutcome) query.tradeOutcome = filter.tradeOutcome;
   if (filter.startDate || filter.endDate) {
     query.createdAt = {};
     if (filter.startDate) query.createdAt.$gte = new Date(filter.startDate);
     if (filter.endDate) query.createdAt.$lte = new Date(filter.endDate);
   }
 
-  if (filter.minWinRate !== undefined) {
-    query.winRate = { $gte: filter.minWinRate };
-  }
-  if (filter.maxWinRate !== undefined) {
-    query.winRate = { ...query.winRate, $lte: filter.maxWinRate };
-  }
-  if (filter.minProfitLoss !== undefined) {
-    query.avgProfitLoss = { $gte: filter.minProfitLoss };
-  }
-  if (filter.maxProfitLoss !== undefined) {
-    query.avgProfitLoss = {
-      ...query.avgProfitLoss,
-      $lte: filter.maxProfitLoss,
-    };
-  }
+  const addRangeFilter = (field: string, min?: number, max?: number) => {
+    if (min !== undefined || max !== undefined) {
+      query[field] = {};
+      if (min !== undefined) query[field].$gte = min;
+      if (max !== undefined) query[field].$lte = max;
+    }
+  };
+
+  addRangeFilter("winRate", filter.minWinRate, filter.maxWinRate);
+  addRangeFilter("avgProfitLoss", filter.minProfitLoss, filter.maxProfitLoss);
 
   return query;
 }

@@ -106,6 +106,16 @@ export class TradeController extends Controller {
   @Security("jwt")
   async getWinsAndLosses(@Request() req: any): Promise<any> {
     try {
+      console.log(
+        "PnLCalculator",
+        await this.metricsService.pnLCalculator(req)
+      );
+
+      console.log(
+        "calculateAdvancedMetrics",
+        await this.metricsService.calculateAdvancedMetrics(req)
+      );
+
       return await this.metricsService.calculateWinsAndLosses(req);
     } catch (error) {
       console.log(error);

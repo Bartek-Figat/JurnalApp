@@ -1,4 +1,5 @@
 import { config } from "dotenv";
+import requestIp from "request-ip";
 import { hash, genSalt, compare } from "bcrypt";
 import { ObjectId } from "mongodb";
 import { sign, verify } from "jsonwebtoken";
@@ -65,7 +66,10 @@ export class AuthService {
   }
 
   //================Login===============================
-  async login({ email, password }: ILogin): Promise<{ token: string }> {
+  async login(
+    { email, password }: ILogin,
+    req: requestIp.Request
+  ): Promise<{ token: string }> {
     try {
       const user = await this.userCollection.findOne({ email });
       if (!user) {
@@ -84,6 +88,12 @@ export class AuthService {
       const userIdAsString = user._id.toString();
       const token = this.tokenService.generateAccessToken(userIdAsString);
 
+      // Use request-ip to get the client's IP address
+      const ipAddress = requestIp.getClientIp(req);
+
+      console.log("IP Address:", ipAddress); // Log the IP address for debugging
+      console.log("User ID:", userIdAsString); // Log the user ID for debugging
+
       await this.userCollection.updateOne(
         { _id: user._id },
         {
@@ -91,6 +101,7 @@ export class AuthService {
           $set: {
             isLogin: true,
             lastLoggedIn: new Date(),
+            ipAddress: ipAddress, // Store the IP address
           },
         }
       );

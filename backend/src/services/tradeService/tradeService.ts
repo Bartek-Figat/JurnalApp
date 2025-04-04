@@ -42,6 +42,12 @@ export class TradeService {
   private db = new Database().getCollection(this.trades);
   private tradeValidator: TradeValidator = new TradeValidator();
 
+  /**
+   * Creates a new trade for the user.
+   * @param req - The request object containing user information.
+   * @param trade - The trade data to be created.
+   * @returns The result of the trade creation operation.
+   */
   async createTrade(req: { user: any }, trade: ICreateTrade) {
     try {
       const { user: { decoded: { userId = null } = {} } = {} } = req;
@@ -69,6 +75,11 @@ export class TradeService {
     }
   }
 
+  /**
+   * Retrieves a trade by its ID.
+   * @param id - The ID of the trade to be retrieved.
+   * @returns The trade data.
+   */
   async getTradeById(id: string) {
     console.log("id", id);
     try {
@@ -86,6 +97,13 @@ export class TradeService {
     }
   }
 
+  /**
+   * Retrieves a list of trades for the user with pagination and calculates profit/loss for each trade.
+   * @param skip - The number of trades to skip for pagination.
+   * @param limit - The number of trades to retrieve.
+   * @param req - The request object containing user information.
+   * @returns An array of trades with calculated profit/loss.
+   */
   async getTrades(skip: number = 0, limit: number = 10, req: any) {
     const { user: { decoded: { userId = null } = {} } = {} } = req;
 
@@ -114,6 +132,11 @@ export class TradeService {
     }
   }
 
+  /**
+   * Updates a trade by its ID.
+   * @param id - The ID of the trade to be updated.
+   * @param update - The update data for the trade.
+   */
   async updateTrade(id: string, update: Partial<ITrade>): Promise<void> {
     try {
       const objectId = new ObjectId(id);
@@ -124,6 +147,10 @@ export class TradeService {
     }
   }
 
+  /**
+   * Deletes a trade by its ID.
+   * @param id - The ID of the trade to be deleted.
+   */
   async deleteTrade(id: string): Promise<void> {
     try {
       const objectId = new ObjectId(id);
@@ -134,22 +161,30 @@ export class TradeService {
     }
   }
 
+  /**
+   * Filters trades based on query parameters and calculates profit/loss for each trade.
+   * @param req - The request object containing user information and query parameters.
+   * @returns An object containing filtered trades and the count of total trades.
+   */
   async filterTrades(req: any) {
     const { user: { decoded: { userId = null } = {} } = {} } = req;
-    const { page, ...rest } = req.query;
+    const { page = 1, ...rest } = req.query;
     const limit = 10;
+
     try {
       const query = tradeQueryFilter(rest);
       const skip = (page - 1) * limit;
+
+      // Fetch trades with pagination
       const trades = await this.db
-        .find({ authorId: userId, $and: [query] })
+        .find({ authorId: userId, ...query })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .toArray();
 
-      //count all trades by authorId use length of the array
-      const tradesCount = await this.db.find({ authorId: userId }).toArray();
+      // Count all trades by authorId and query
+      const tradesCount = await this.db.countDocuments({ authorId: userId });
 
       const tradesWithProfitLoss = trades.map((trade) => {
         const { profitLoss, gainPercentage } = calculateProfitLoss(
@@ -161,7 +196,7 @@ export class TradeService {
         return { ...trade, profitLoss, gainPercentage };
       });
 
-      return { trades: tradesWithProfitLoss, count: tradesCount.length };
+      return { trades: tradesWithProfitLoss, count: tradesCount };
     } catch (error) {
       console.error("Error filtering trades:", error);
       throw new ApiError("Failed to filter trades", 500);

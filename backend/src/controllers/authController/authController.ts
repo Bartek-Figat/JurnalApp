@@ -37,8 +37,11 @@ export class CustomAuthController extends Controller {
 
   @Post("login")
   @Middlewares([CustomAuthController.rateLimiter, validateLoginIncomingFields])
-  async login(@Body() req: any): Promise<{ token: string }> {
-    return this.authService.login(req);
+  async login(
+    @Body() body: any,
+    @Request() req: any
+  ): Promise<{ token: string }> {
+    return this.authService.login(body, req);
   }
 
   @Security("jwt")

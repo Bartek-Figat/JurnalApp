@@ -4,6 +4,12 @@ export class CalculateTradeMetricsRepository {
   private readonly trades: string = "trades";
   private db = new Database().getCollection(this.trades);
 
+  /**
+   * Calculates various metrics for the user's trades including investment return,
+   * expense ratio, and savings rate.
+   * @param req - The request object containing user information.
+   * @returns The calculated metrics for the user's trades.
+   */
   async calculateMetrics(req: any) {
     const { user: { decoded: { userId = null } = {} } = {} } = req;
 
@@ -50,114 +56,93 @@ export class CalculateTradeMetricsRepository {
 
   // ==============================================================
 
-  async calculateWinsAndLosses(req: any) {
-    const { user: { decoded: { userId = null } = {} } = {} } = req;
+  /**
+   * Calculates the total wins and losses for the user's trades.
+   * @param req - The request object containing user information.
+   * @returns An array of calculated wins and losses for each trade type.
+   */
+  async calculateWinsAndLosses(req: { user: { decoded: { userId: string } } }) {
+    const userId = req.user?.decoded?.userId;
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+
     const pipeline = [
-      { $match: { authorId: userId } },
       {
-        $group: {
-          _id: {
-            tradeType: "$tradeType",
-            tradeOutcome: "$tradeOutcome",
-          },
-          totalProfit: {
-            $sum: {
-              $cond: [{ $eq: ["$tradeOutcome", "win"] }, "$profitLoss", 0],
-            },
-          },
-          totalLoss: {
-            $sum: {
-              $cond: [
-                { $eq: ["$tradeOutcome", "loss"] },
-                { $abs: "$profitLoss" },
-                0,
-              ],
-            },
-          },
-          totalInvestment: { $sum: { $ifNull: ["$investment", 0] } },
-          count: { $sum: 1 },
-        },
+        $match: { authorId: userId },
       },
       {
         $group: {
-          _id: "$_id.tradeType",
-          totalWins: {
-            $sum: { $cond: [{ $eq: ["$_id.tradeOutcome", "win"] }, 1, 0] },
-          },
-          totalLosses: {
-            $sum: { $cond: [{ $eq: ["$_id.tradeOutcome", "loss"] }, 1, 0] },
-          },
-          totalTrades: { $sum: 1 },
-          wins: {
-            $push: {
-              outcome: "$_id.tradeOutcome",
-              totalProfit: "$totalProfit",
-              count: "$count",
+          _id: "$tradeType",
+          totalInvestment: {
+            $sum: {
+              $multiply: [
+                { $ifNull: ["$entryPrice", 0] },
+                { $ifNull: ["$quantity", { $ifNull: ["$units", 1] }] }, // Use quantity or units
+              ],
             },
           },
+          wins: { $sum: { $cond: [{ $eq: ["$tradeOutcome", "win"] }, 1, 0] } },
           losses: {
-            $push: {
-              outcome: "$_id.tradeOutcome",
-              totalLoss: "$totalLoss",
-              count: "$count",
-            },
+            $sum: { $cond: [{ $eq: ["$tradeOutcome", "loss"] }, 1, 0] },
           },
-          totalInvestment: { $first: "$totalInvestment" },
         },
       },
       {
         $project: {
           _id: 0,
           tradeType: "$_id",
-          totalWins: 1,
-          totalLosses: 1,
-          totalTrades: 1,
+          totalInvestment: { $round: ["$totalInvestment", 2] }, // Round to 2 decimal places
+          wins: 1,
+          losses: 1,
+          totalTrades: { $add: ["$wins", "$losses"] },
           winPercentage: {
-            $round: [
-              { $multiply: [{ $divide: ["$totalWins", "$totalTrades"] }, 100] },
-              2,
+            $cond: [
+              { $gt: [{ $add: ["$wins", "$losses"] }, 0] },
+              {
+                $multiply: [
+                  { $divide: ["$wins", { $add: ["$wins", "$losses"] }] },
+                  100,
+                ],
+              },
+              0,
             ],
           },
           lossPercentage: {
-            $round: [
+            $cond: [
+              { $gt: [{ $add: ["$wins", "$losses"] }, 0] },
               {
-                $multiply: [{ $divide: ["$totalLosses", "$totalTrades"] }, 100],
+                $multiply: [
+                  { $divide: ["$losses", { $add: ["$wins", "$losses"] }] },
+                  100,
+                ],
               },
-              2,
+              0,
             ],
           },
-          wins: {
-            $filter: {
-              input: "$wins",
-              as: "win",
-              cond: { $eq: ["$$win.outcome", "win"] },
-            },
-          },
-          losses: {
-            $filter: {
-              input: "$losses",
-              as: "loss",
-              cond: { $eq: ["$$loss.outcome", "loss"] },
-            },
-          },
-          totalInvestment: 1,
-        },
-      },
-      {
-        $project: {
-          tradeType: 1,
-          wins: { $arrayElemAt: ["$wins", 0] },
-          losses: { $arrayElemAt: ["$losses", 0] },
-          totalInvestment: 1,
-          winPercentage: 1,
-          lossPercentage: 1,
         },
       },
     ];
 
-    return await this.db.aggregate(pipeline).toArray();
+    try {
+      return {
+        result: await this.db.aggregate(pipeline).toArray(),
+        calculateAdvancedMetrics: await this.calculateAdvancedMetrics(req),
+        pnLCalculator: await this.pnLCalculator(req),
+        calculateMetrics: await this.calculateMetrics(req),
+      };
+    } catch (error) {
+      console.error("Error calculating wins and losses:", error);
+      throw new Error("Failed to calculate wins and losses");
+    }
   }
 
+  /**
+   * Calculates advanced metrics for the user's trades including ROI,
+   * net profit, and risk-reward ratio.
+   * @param req - The request object containing user information.
+   * @returns The calculated advanced metrics for the user's trades.
+   */
   async calculateMetricsAdvence(req: any) {
     const { user: { decoded: { userId = null } = {} } = {} } = req;
 
@@ -266,10 +251,15 @@ export class CalculateTradeMetricsRepository {
     ];
 
     const result = await this.db.aggregate(pipeline).toArray();
-    console.log(result);
+
     return result[0];
   }
 
+  /**
+   * Calculates the win/loss percentage for the user's trades.
+   * @param req - The request object containing user information.
+   * @returns An array of calculated win/loss percentages for each trade type.
+   */
   async calculateWinLossPercentage(req: any) {
     const { user: { decoded: { userId = null } = {} } = {} } = req;
 
@@ -319,7 +309,186 @@ export class CalculateTradeMetricsRepository {
     ];
 
     const result = await this.db.aggregate(pipeline).toArray();
-    console.log(result);
+
     return result;
+  }
+
+  /**
+   * Calculates the Profit and Loss (PnL) for the user's trades.
+   * @param req - The request object containing user information.
+   * @returns An array of calculated PnL for each trade type.
+   */
+  async pnLCalculator(req: any) {
+    const { user: { decoded: { userId = null } = {} } = {} } = req;
+
+    try {
+      const pipeline = [
+        { $match: { authorId: userId } },
+        {
+          $group: {
+            _id: {
+              tradeType: "$tradeType",
+              tradeOutcome: "$tradeOutcome",
+            },
+            winCount: {
+              $sum: { $cond: [{ $eq: ["$tradeOutcome", "win"] }, 1, 0] },
+            },
+            lossCount: {
+              $sum: { $cond: [{ $eq: ["$tradeOutcome", "loss"] }, 1, 0] },
+            },
+            totalCount: { $sum: 1 },
+          },
+        },
+        {
+          $group: {
+            _id: "$_id.tradeType",
+            wins: { $sum: "$winCount" },
+            losses: { $sum: "$lossCount" },
+            totalCount: { $sum: "$totalCount" },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            tradeType: "$_id",
+            winPercentage: {
+              $round: [
+                { $multiply: [{ $divide: ["$wins", "$totalCount"] }, 100] },
+                2,
+              ],
+            },
+            lossPercentage: {
+              $round: [
+                { $multiply: [{ $divide: ["$losses", "$totalCount"] }, 100] },
+                2,
+              ],
+            },
+          },
+        },
+      ];
+
+      const result = await this.db.aggregate(pipeline).toArray();
+
+      return result;
+    } catch (error) {
+      console.error("Error calculating PnL:", error);
+      throw new Error("Failed to calculate PnL");
+    }
+  }
+
+  /**
+   * Calculates advanced metrics for the user's trades, similar to calculateMetricsAdvence.
+   * @param req - The request object containing user information.
+   * @returns The calculated advanced metrics for the user's trades.
+   */
+  async calculateAdvancedMetrics(req: any) {
+    const { user: { decoded: { userId = null } = {} } = {} } = req;
+
+    const pipeline = [
+      { $match: { authorId: userId } },
+      {
+        $group: {
+          _id: null,
+          totalInvestmentReturn: {
+            $sum: {
+              $multiply: [
+                { $subtract: ["$exitPrice", "$entryPrice"] },
+                "$quantity",
+              ],
+            },
+          },
+          totalFees: { $sum: "$fees" },
+          totalInvestment: {
+            $sum: { $multiply: ["$entryPrice", "$quantity"] },
+          },
+          totalSavings: { $sum: "$profitLoss" },
+          totalProfit: {
+            $sum: {
+              $cond: [{ $eq: ["$tradeOutcome", "win"] }, "$profitLoss", 0],
+            },
+          },
+          totalLoss: {
+            $sum: {
+              $cond: [
+                { $eq: ["$tradeOutcome", "loss"] },
+                { $abs: "$profitLoss" },
+                0,
+              ],
+            },
+          },
+          winCount: {
+            $sum: { $cond: [{ $eq: ["$tradeOutcome", "win"] }, 1, 0] },
+          },
+          lossCount: {
+            $sum: { $cond: [{ $eq: ["$tradeOutcome", "loss"] }, 1, 0] },
+          },
+          totalCount: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          investmentReturn: {
+            $round: ["$totalInvestmentReturn", 2],
+          },
+          expenseRatio: {
+            $round: [{ $divide: ["$totalFees", "$totalInvestment"] }, 2],
+          },
+          savingsRate: {
+            $round: [{ $divide: ["$totalSavings", "$totalInvestment"] }, 2],
+          },
+          transactionCosts: "$totalFees",
+          ROI: {
+            $round: [
+              {
+                $multiply: [
+                  { $divide: ["$totalInvestmentReturn", "$totalInvestment"] },
+                  100,
+                ],
+              },
+              2,
+            ],
+          },
+          breakEvenPercentage: {
+            $round: [
+              {
+                $multiply: [
+                  { $divide: ["$totalFees", "$totalInvestment"] },
+                  100,
+                ],
+              },
+              2,
+            ],
+          },
+          riskRewardRatio: {
+            $round: [
+              {
+                $divide: ["$totalProfit", "$totalLoss"],
+              },
+              2,
+            ],
+          },
+          netProfit: {
+            $round: [
+              {
+                $subtract: ["$totalProfit", "$totalLoss"],
+              },
+              2,
+            ],
+          },
+          winPercentage: {
+            $round: [
+              {
+                $multiply: [{ $divide: ["$winCount", "$totalCount"] }, 100],
+              },
+              2,
+            ],
+          },
+        },
+      },
+    ];
+
+    const result = await this.db.aggregate(pipeline).toArray();
+    return result[0];
   }
 }

@@ -27,11 +27,22 @@ export async function expressAuthentication(
   const collection = database.getCollection("user");
   const authorizationTokenExists = await collection.findOne(
     { authorizationToken: token },
-    { projection: { _id: 0 } }
+    { projection: { _id: 0, ipAddress: 1 } }
   );
 
   if (!authorizationTokenExists) {
     throw new ApiError("Unauthorized", 401, "Unauthorized");
+  }
+
+  // Check if the IP address matches
+  const requestIp = req.ip;
+  console.log("requestIp", requestIp);
+  console.log(
+    "authorizationTokenExists.ipAddress",
+    authorizationTokenExists.ipAddress
+  );
+  if (authorizationTokenExists.ipAddress !== requestIp) {
+    throw new ApiError("Unauthorized", 401, "IP address mismatch");
   }
 
   try {

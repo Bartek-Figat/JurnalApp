@@ -39,118 +39,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ITrade": {
-				"properties": {
-					"tradeType": {
-						"type": "string"
-					},
-					"entryDate": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"exitDate": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"userId": {
-						"type": "string"
-					},
-					"symbol": {
-						"type": "string"
-					},
-					"entryPrice": {
-						"type": "number",
-						"format": "double"
-					},
-					"exitPrice": {
-						"type": "number",
-						"format": "double"
-					},
-					"risk": {
-						"type": "number",
-						"format": "double"
-					},
-					"reward": {
-						"type": "number",
-						"format": "double"
-					},
-					"tags": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"winRate": {
-						"type": "number",
-						"format": "double"
-					},
-					"avgProfitLoss": {
-						"type": "number",
-						"format": "double"
-					},
-					"riskRewardRatio": {
-						"type": "number",
-						"format": "double"
-					},
-					"maxDrawdown": {
-						"type": "number",
-						"format": "double"
-					},
-					"profitFactor": {
-						"type": "number",
-						"format": "double"
-					},
-					"sharpeRatio": {
-						"type": "number",
-						"format": "double"
-					},
-					"volatility": {
-						"type": "number",
-						"format": "double"
-					},
-					"sortinoRatio": {
-						"type": "number",
-						"format": "double"
-					},
-					"avgHoldingPeriod": {
-						"type": "number",
-						"format": "double"
-					},
-					"improvementSuggestions": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
-					"stopLossLevel": {
-						"type": "number",
-						"format": "double"
-					},
-					"positionSize": {
-						"type": "number",
-						"format": "double"
-					}
-				},
-				"required": [
-					"tradeType",
-					"entryDate",
-					"exitDate",
-					"userId",
-					"symbol",
-					"entryPrice",
-					"exitPrice",
-					"risk",
-					"reward",
-					"tags",
-					"createdAt"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"Partial_ITrade_": {
 				"properties": {
 					"tradeType": {
@@ -481,9 +369,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ITrade"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -491,7 +377,11 @@
 				"tags": [
 					"Trades"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -525,28 +415,7 @@
 						"jwt": []
 					}
 				],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "skip",
-						"required": false,
-						"schema": {
-							"default": 0,
-							"format": "double",
-							"type": "number"
-						}
-					},
-					{
-						"in": "query",
-						"name": "limit",
-						"required": false,
-						"schema": {
-							"default": 10,
-							"format": "double",
-							"type": "number"
-						}
-					}
-				]
+				"parameters": []
 			}
 		},
 		"/api/trades/update/{id}": {
@@ -620,6 +489,126 @@
 				"operationId": "FilterTrades",
 				"responses": {
 					"200": {
+						"description": "Successfully filtered trades",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/crypto-pagination": {
+			"get": {
+				"operationId": "CryptoPagination",
+				"responses": {
+					"200": {
+						"description": "Successfully filtered trades",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/forex-pagination": {
+			"get": {
+				"operationId": "ForexPagination",
+				"responses": {
+					"200": {
+						"description": "Successfully filtered trades",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/stock-pagination": {
+			"get": {
+				"operationId": "StockPagination",
+				"responses": {
+					"200": {
+						"description": "Successfully filtered trades",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/crypto-spot-pagination": {
+			"get": {
+				"operationId": "CryptoSpotPagination",
+				"responses": {
+					"200": {
+						"description": "Successfully filtered trades",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/total-gains": {
+			"get": {
+				"operationId": "CalculateTotalGains",
+				"responses": {
+					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
@@ -666,6 +655,150 @@
 		"/api/trades/wins-losses": {
 			"get": {
 				"operationId": "GetWinsAndLosses",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/analysis/all/crypto-spot": {
+			"get": {
+				"operationId": "GetAllCryptoAnalyses",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/analysis/all/forex-pair": {
+			"get": {
+				"operationId": "GetForexPairAnalysis",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/analysis/all/leveraged-crypto": {
+			"get": {
+				"operationId": "GetLeveragedCryptoAnalysis",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/analysis/all/option-trade": {
+			"get": {
+				"operationId": "GetOptionTradeAnalysis",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/analysis/all/stock-trade": {
+			"get": {
+				"operationId": "GetStockTradeAnalysis",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Trades"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/trades/analyze-trade-risk": {
+			"get": {
+				"operationId": "AnalyzeTradeRisk",
 				"responses": {
 					"200": {
 						"description": "Ok",

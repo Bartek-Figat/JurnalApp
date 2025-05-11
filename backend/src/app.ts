@@ -15,15 +15,47 @@ import { ApiError } from "./errorHandler/error";
 
 export const app = express();
 
-// Security middleware
+/** 1. Trust proxy (for secure cookies & rate limiting behind a proxy) */
+app.set("trust proxy", 1);
+
+/** 2. Secure HTTP Headers */
 app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
+app.use(helmet.referrerPolicy({ policy: "same-origin" }));
+app.use(helmet.frameguard({ action: "sameorigin" }));
+app.use(helmet.noSniff());
+app.use(helmet.xssFilter());
+
+/** 3. Disable identifying headers */
+app.disable("x-powered-by");
+
+/** 4. Compression and logging */
 app.use(compression());
 app.use(morgan("dev"));
 
-// CORS
+/** 6. CORS Configuration */
+const allowedOrigins = ["http://localhost:3000"];
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: [
       "Origin",
@@ -37,19 +69,11 @@ app.use(
   })
 );
 
-app.use(urlencoded({ extended: true, limit: "50mb" }));
-app.use(json({ limit: "50mb" }));
+/** 7. Body Parsing and Payload Limit */
+app.use(urlencoded({ extended: true, limit: "1mb" }));
+app.use(json({ limit: "1mb" }));
 
-// Security-related HTTP headers
-app.set("trust proxy", 1);
-app.set("x-powered-by", false);
-app.disable("x-powered-by");
-app.use(helmet.contentSecurityPolicy());
-app.use(helmet.referrerPolicy({ policy: "same-origin" }));
-app.use(helmet.frameguard({ action: "sameorigin" }));
-app.use(helmet.noSniff());
-app.use(helmet.xssFilter());
-
+/** 8. Prevent HTTP Parameter Pollution */
 app.use(hpp());
 
 // Register API routes
@@ -63,8 +87,8 @@ app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-// app.use((_req: Request, res: Response, _next: NextFunction) => {
-//   res.status(404).json({ error: "Route not found" });
-// });
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: "Route not found" });
+});
 
 export default app;

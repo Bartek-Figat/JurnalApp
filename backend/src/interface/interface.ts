@@ -1,36 +1,53 @@
+/**
+ * Interface for user registration details.
+ */
 interface IRegister {
   password: string;
-  email?: string; // Email is optional
+  email?: string;
   matchPassword: string;
-  agreementToWebsitePolicy?: boolean; // Agreement is optional
+  agreementToWebsitePolicy?: boolean;
 }
 
+/**
+ * Interface for user login details.
+ */
 interface ILogin {
   password: string;
   email: string;
 }
 
+/**
+ * Interface for forgot password request.
+ */
 export interface IForgotPassword {
   email: string;
 }
 
-export interface IResetPassword {
+/**
+ * Interface for resetting user password.
+ */ export interface IResetPassword {
   token: string;
   newPassword: string;
 }
 
+/**
+ * Interface for sending verification email data.
+ */
 interface ISendVerificationEmailData {
-  email?: string; // Email is optional
-  password?: string; // Password is optional
+  email?: string;
+  password?: string;
   authToken: string;
-  isVerified?: boolean; // Verification status is optional
-  dateAdded?: Date; // Date added is optional
-  lastLoggedIn?: Date | null; // Last logged in can be null
-  logOutDate?: Date | null; // Logout date can be null
-  isLogin?: boolean; // Login status is optional
-  agreementToWebsitePolicy?: boolean; // Agreement is optional
+  isVerified?: boolean;
+  dateAdded?: Date;
+  lastLoggedIn?: Date | null;
+  logOutDate?: Date | null;
+  isLogin?: boolean;
+  agreementToWebsitePolicy?: boolean;
 }
 
+/**
+ * Interface for logout request.
+ */
 interface ILogout {
   user: {
     decoded: { userId: string };
@@ -38,6 +55,9 @@ interface ILogout {
   };
 }
 
+/**
+ * Interface for a trade, including its details and performance metrics.
+ */
 interface ITrade {
   tradeType: string;
   entryDate: Date;
@@ -64,47 +84,56 @@ interface ITrade {
   positionSize?: number;
 }
 
-interface ICreateTrade {
-  tradeType: any;
-  tradeOutcome: string; // Outcome of the trade (e.g., win, loss)
-  riskPercentage?: number; // Percentage of risk for the trade
-  positionType?: "long" | "short" | "spot"; // Type of position taken
-  leverage?: number; // Leverage used for the trade
-  costBasis?: number; // Cost basis for the trade
-  profitLoss?: number; // Profit or loss from the trade
-  symbol: string; // Trading symbol (e.g., AAPL, EUR/USD)
-  entryPrice: number; // Price at which the trade is entered
-  exitPrice: number; // Price at which the trade is exited
-  risk: number; // Amount of risk taken in the trade
-  reward: number; // Potential reward from the trade
-  tags: string[]; // Tags associated with the trade for categorization
-  createdAt: string; // Date when the trade was created
-  entryDate: string; // Date when the trade was entered
-  exitDate: string; // Date when the trade was exited
-  quantity?: number; // Quantity for stock and crypto trades
-  optionType?: "call" | "put"; // Type of option (if applicable)
-  strikePrice?: number; // Strike price for options
-  optionPremium?: number; // Premium paid for options
-  units?: number; // Number of units for forex trades
-  usdExchangeRate?: number; // Exchange rate for forex trades
-  fees?: number; // Potential fees associated with the trade
-  winRate?: number; // Default value for winRate
-  avgProfitLoss?: number; // Default value for avgProfitLoss
-  riskRewardRatio?: number; // Default value for riskRewardRatio
-  maxDrawdown?: number; // Default value for maxDrawdown
-  sharpeRatio?: number; // Default value for sharpeRatio
-  profitFactor?: number; // Default value for profitFactor
-  volatility?: number; // Default value for volatility
-  sortinoRatio?: number; // Default value for sortinoRatio
-  avgHoldingPeriod?: number; // Default value for avgHoldingPeriod
-  improvementSuggestions?: any[]; // Default value for improvementSuggestions
+/**
+ * Interface for creating a trade, including optional parameters for additional trade details.
+ */ // Enum for different types of trades
+export enum TradeType {
+  Stock = "stock",
+  Forex = "forex",
+  Crypto = "crypto",
+  Option = "option",
+  CryptoSpot = "crypto spot",
 }
 
-export {
-  IRegister,
-  ILogin,
-  ISendVerificationEmailData,
-  ILogout,
-  ITrade,
-  ICreateTrade,
-};
+export interface ICreateTrade {
+  tradeType: TradeType;
+  tradeOutcome: "win" | "loss";
+  riskPercentage?: number;
+  positionType?: "long" | "short";
+  leverage?: number;
+  costBasis?: number;
+  profitLoss?: number;
+  symbol: string;
+  entryPrice: number;
+  exitPrice: number;
+  risk: number;
+  reward: number;
+  tags: string[];
+  createdAt: Date;
+  entryDate: Date;
+  exitDate: Date;
+  quantity?: number;
+  optionType?: "call" | "put";
+  strikePrice?: number;
+  optionPremium?: number;
+  units?: number;
+  usdExchangeRate?: number;
+  fees?: number;
+  winRate?: number;
+  avgProfitLoss?: number;
+  riskRewardRatio?: number;
+  maxDrawdown?: number;
+  sharpeRatio?: number;
+  profitFactor?: number;
+  volatility?: number;
+  sortinoRatio?: number;
+  avgHoldingPeriod?: number;
+  improvementSuggestions?: any;
+  daysToExpiration?: number;
+  dailyTheta?: number;
+  marginRequired?: boolean;
+  marginAvailable?: number;
+  expirationDate?: string;
+}
+
+export { IRegister, ILogin, ISendVerificationEmailData, ILogout, ITrade };

@@ -25,7 +25,13 @@ export class AuthService {
   private tokenService: TokenService = new TokenService();
   private userCollection = this.database.getCollection(this.userDB);
 
-  //================Registration===============================
+  /**
+   * Registers a new user by creating an account and sending a verification email.
+   * @param email - The user's email address.
+   * @param password - The user's password.
+   * @param agreementToWebsitePolicy - User's agreement to terms and conditions.
+   * @throws ApiError if the email already exists or any unexpected error occurs.
+   */
   async registration({
     email,
     password,
@@ -65,7 +71,15 @@ export class AuthService {
     }
   }
 
-  //================Login===============================
+  /**
+   * Logs in an existing user by verifying email and password, generating an access token,
+   * and storing the user's session data.
+   * @param email - The user's email address.
+   * @param password - The user's password.
+   * @param req - The client request object to retrieve the IP address.
+   * @returns An object containing the generated access token.
+   * @throws ApiError if the user is not found, not verified, or password does not match.
+   */
   async login(
     { email, password }: ILogin,
     req: requestIp.Request
@@ -91,9 +105,6 @@ export class AuthService {
       // Use request-ip to get the client's IP address
       const ipAddress = requestIp.getClientIp(req);
 
-      console.log("IP Address:", ipAddress); // Log the IP address for debugging
-      console.log("User ID:", userIdAsString); // Log the user ID for debugging
-
       await this.userCollection.updateOne(
         { _id: user._id },
         {
@@ -116,7 +127,13 @@ export class AuthService {
     }
   }
 
-  //================Validate Token===============================
+  /**
+   * Validates the provided token to check if it belongs to a logged-in user.
+   * @param token - The token to validate.
+   * @param req - The logout request containing user details.
+   * @returns A boolean indicating whether the token is valid.
+   * @throws ApiError if the token is invalid or the user is unauthorized.
+   */
   async validateToken({ token }: any, req: ILogout): Promise<boolean> {
     const {
       user: {
@@ -124,7 +141,6 @@ export class AuthService {
       },
     } = req;
 
-    console.log("userId", userId);
     try {
       const user = await this.userCollection.findOne(
         { authorizationToken: token, _id: new ObjectId(userId) },
@@ -142,7 +158,11 @@ export class AuthService {
     }
   }
 
-  //================Logout===============================
+  /**
+   * Logs out the currently logged-in user by invalidating the session and clearing tokens.
+   * @param logout - The logout request containing user details.
+   * @throws ApiError if an error occurs during logout.
+   */
   async logout(logout: ILogout): Promise<void> {
     try {
       const {
@@ -170,7 +190,11 @@ export class AuthService {
     }
   }
 
-  //================Forgot Password===============================
+  /**
+   * Sends a password reset email to the user with a reset token.
+   * @param email - The user's email address.
+   * @throws ApiError if the email is not found or any unexpected error occurs.
+   */
   async forgotPassword({ email }: IForgotPassword): Promise<void> {
     try {
       const user = await this.userCollection.findOne({ email });
@@ -193,7 +217,12 @@ export class AuthService {
     }
   }
 
-  //================Reset Password===============================
+  /**
+   * Resets the user's password by verifying the token and updating the password in the database.
+   * @param token - The reset token sent to the user.
+   * @param newPassword - The new password to set for the user.
+   * @throws ApiError if the token is invalid or an error occurs during the reset.
+   */
   async resetPassword({ token, newPassword }: IResetPassword): Promise<void> {
     try {
       const decoded: any = verify(token, process.env.JWT_SECRET || "");

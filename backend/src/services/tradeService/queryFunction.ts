@@ -11,7 +11,9 @@ export function tradeQueryFilter(filter: {
 }): Record<string, any> {
   const query: Record<string, any> = {};
 
-  if (filter.tradeType) query.tradeType = filter.tradeType;
+  if (filter.tradeType) {
+    query.tradeType = filter.tradeType;
+  }
   if (filter.symbol) query.symbol = filter.symbol;
   if (filter.tradeOutcome) query.tradeOutcome = filter.tradeOutcome;
   if (filter.startDate || filter.endDate) {

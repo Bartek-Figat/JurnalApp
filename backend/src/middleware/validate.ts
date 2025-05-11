@@ -8,7 +8,6 @@ async function validateLoginIncomingFields(
   next: NextFunction
 ) {
   const userRegisterValidation = new LoginDto();
-  console.log(req.body);
   Object.assign(userRegisterValidation, req.body);
 
   const validationErrors = await validate(userRegisterValidation);

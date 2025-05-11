@@ -42,36 +42,6 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ITrade": {
-        "dataType": "refObject",
-        "properties": {
-            "tradeType": {"dataType":"string","required":true},
-            "entryDate": {"dataType":"datetime","required":true},
-            "exitDate": {"dataType":"datetime","required":true},
-            "userId": {"dataType":"string","required":true},
-            "symbol": {"dataType":"string","required":true},
-            "entryPrice": {"dataType":"double","required":true},
-            "exitPrice": {"dataType":"double","required":true},
-            "risk": {"dataType":"double","required":true},
-            "reward": {"dataType":"double","required":true},
-            "tags": {"dataType":"array","array":{"dataType":"string"},"required":true},
-            "createdAt": {"dataType":"datetime","required":true},
-            "winRate": {"dataType":"double"},
-            "avgProfitLoss": {"dataType":"double"},
-            "riskRewardRatio": {"dataType":"double"},
-            "maxDrawdown": {"dataType":"double"},
-            "profitFactor": {"dataType":"double"},
-            "sharpeRatio": {"dataType":"double"},
-            "volatility": {"dataType":"double"},
-            "sortinoRatio": {"dataType":"double"},
-            "avgHoldingPeriod": {"dataType":"double"},
-            "improvementSuggestions": {"dataType":"array","array":{"dataType":"string"}},
-            "stopLossLevel": {"dataType":"double"},
-            "positionSize": {"dataType":"double"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Partial_ITrade_": {
         "dataType": "refAlias",
         "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"tradeType":{"dataType":"string"},"entryDate":{"dataType":"datetime"},"exitDate":{"dataType":"datetime"},"userId":{"dataType":"string"},"symbol":{"dataType":"string"},"entryPrice":{"dataType":"double"},"exitPrice":{"dataType":"double"},"risk":{"dataType":"double"},"reward":{"dataType":"double"},"tags":{"dataType":"array","array":{"dataType":"string"}},"createdAt":{"dataType":"datetime"},"winRate":{"dataType":"double"},"avgProfitLoss":{"dataType":"double"},"riskRewardRatio":{"dataType":"double"},"maxDrawdown":{"dataType":"double"},"profitFactor":{"dataType":"double"},"sharpeRatio":{"dataType":"double"},"volatility":{"dataType":"double"},"sortinoRatio":{"dataType":"double"},"avgHoldingPeriod":{"dataType":"double"},"improvementSuggestions":{"dataType":"array","array":{"dataType":"string"}},"stopLossLevel":{"dataType":"double"},"positionSize":{"dataType":"double"}},"validators":{}},
@@ -283,8 +253,10 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsTradeController_getTradeById: Record<string, TsoaRoute.ParameterSchema> = {
                 id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.get('/api/trades/get/:id',
+            authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(TradeController)),
             ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.getTradeById)),
 
@@ -312,8 +284,6 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsTradeController_getTrades: Record<string, TsoaRoute.ParameterSchema> = {
-                skip: {"default":0,"in":"query","name":"skip","dataType":"double"},
-                limit: {"default":10,"in":"query","name":"limit","dataType":"double"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
         app.get('/api/trades/list',
@@ -431,6 +401,161 @@ export function RegisterRoutes(app: Router) {
                 response,
                 next,
                 validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_cryptoPagination: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/crypto-pagination',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.cryptoPagination)),
+
+            async function TradeController_cryptoPagination(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_cryptoPagination, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'cryptoPagination',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_forexPagination: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/forex-pagination',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.forexPagination)),
+
+            async function TradeController_forexPagination(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_forexPagination, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'forexPagination',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_stockPagination: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/stock-pagination',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.stockPagination)),
+
+            async function TradeController_stockPagination(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_stockPagination, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'stockPagination',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_cryptoSpotPagination: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/crypto-spot-pagination',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.cryptoSpotPagination)),
+
+            async function TradeController_cryptoSpotPagination(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_cryptoSpotPagination, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'cryptoSpotPagination',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_calculateTotalGains: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/total-gains',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.calculateTotalGains)),
+
+            async function TradeController_calculateTotalGains(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_calculateTotalGains, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'calculateTotalGains',
+                controller,
+                response,
+                next,
+                validatedArgs,
                 successStatus: undefined,
               });
             } catch (err) {
@@ -489,6 +614,192 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'getWinsAndLosses',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_getAllCryptoAnalyses: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/analysis/all/crypto-spot',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.getAllCryptoAnalyses)),
+
+            async function TradeController_getAllCryptoAnalyses(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_getAllCryptoAnalyses, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'getAllCryptoAnalyses',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_getForexPairAnalysis: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/analysis/all/forex-pair',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.getForexPairAnalysis)),
+
+            async function TradeController_getForexPairAnalysis(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_getForexPairAnalysis, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'getForexPairAnalysis',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_getLeveragedCryptoAnalysis: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/analysis/all/leveraged-crypto',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.getLeveragedCryptoAnalysis)),
+
+            async function TradeController_getLeveragedCryptoAnalysis(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_getLeveragedCryptoAnalysis, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'getLeveragedCryptoAnalysis',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_getOptionTradeAnalysis: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/analysis/all/option-trade',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.getOptionTradeAnalysis)),
+
+            async function TradeController_getOptionTradeAnalysis(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_getOptionTradeAnalysis, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'getOptionTradeAnalysis',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_getStockTradeAnalysis: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/analysis/all/stock-trade',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.getStockTradeAnalysis)),
+
+            async function TradeController_getStockTradeAnalysis(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_getStockTradeAnalysis, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'getStockTradeAnalysis',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTradeController_analyzeTradeRisk: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/trades/analyze-trade-risk',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(TradeController)),
+            ...(fetchMiddlewares<RequestHandler>(TradeController.prototype.analyzeTradeRisk)),
+
+            async function TradeController_analyzeTradeRisk(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTradeController_analyzeTradeRisk, request, response });
+
+                const controller = new TradeController();
+
+              await templateService.apiHandler({
+                methodName: 'analyzeTradeRisk',
                 controller,
                 response,
                 next,
